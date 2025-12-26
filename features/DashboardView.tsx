@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ViewState, UserProfile } from '../types';
 import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText } from 'lucide-react';
 import { getDailyRecommendations } from '../services/geminiService';
+import { WellTrackLogo } from '../components/WellTrackLogo';
 
 interface DashboardProps {
   user: UserProfile;
@@ -49,7 +50,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
       
-      {/* Header Premium avec correction de la zone sécurisée */}
+      {/* Header Premium avec Nouveau Logo */}
       <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[28rem] rounded-b-[5rem] relative px-8 text-white shadow-2xl transition-all duration-500">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
         
@@ -58,9 +59,9 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
 
         <div className="flex justify-between items-start relative z-10">
           <div>
-            <h1 className="text-4xl font-black tracking-tighter">WellTrack</h1>
-            <div className="flex items-center gap-2 mt-1">
-               <span className="text-blue-100/80 text-sm font-bold uppercase tracking-widest">Niveau {user.level}</span>
+            <WellTrackLogo variant="white" size={44} />
+            <div className="flex items-center gap-2 mt-2 px-1">
+               <span className="text-blue-100/60 text-[10px] font-black uppercase tracking-[0.2em]">Athlete Pro Edition</span>
             </div>
           </div>
           
@@ -91,15 +92,15 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                  <Zap className="text-white" size={28} />
               </div>
               <div>
-                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Victoires</p>
-                 <p className="text-3xl font-black">12 Jours</p>
+                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Série de Victoires</p>
+                 <p className="text-3xl font-black">{user.level + 10} Jours</p>
               </div>
            </div>
            <Award className="text-yellow-400 opacity-40 animate-pulse" size={48} />
         </div>
       </div>
 
-      {/* Carte des Pas */}
+      {/* Reste du Dashboard... */}
       <div className="px-8 -mt-24 relative z-20">
         <div className="bg-white rounded-[4rem] p-10 shadow-pro border border-white relative overflow-hidden">
            <div className="flex justify-between items-center mb-10">
@@ -107,7 +108,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                 <div className="p-2.5 bg-blue-50 rounded-2xl">
                   <TrendingUp size={20} className="text-brand-blue" />
                 </div>
-                <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Activité</span>
+                <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Pas Quotidiens</span>
               </div>
               <span className="text-[10px] font-black text-green-500 bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">Optimal</span>
            </div>
@@ -126,7 +127,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                  </svg>
                  <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-4xl font-black text-slate-900 tracking-tighter">{stats.dailySteps.toLocaleString()}</span>
-                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Pas</span>
+                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Objectif 10k</span>
                  </div>
               </div>
 
@@ -134,12 +135,12 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                  <div className="flex flex-col">
                     <div className="flex justify-between items-end mb-3">
                       <div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Calories</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Calories Consommées</span>
                         <span className="text-4xl font-black text-slate-900 tracking-tighter">{stats.dailyCalories} <span className="text-sm text-slate-400 font-bold">kcal</span></span>
                       </div>
                     </div>
                     <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 shadow-inner">
-                       <div className="bg-gradient-to-r from-orange-400 to-red-500 h-full rounded-full shadow-lg transition-all duration-1000 ease-out" style={{ width: '65%' }}></div>
+                       <div className="bg-gradient-to-r from-orange-400 to-red-500 h-full rounded-full shadow-lg transition-all duration-1000 ease-out" style={{ width: `${Math.min((stats.dailyCalories / 2500) * 100, 100)}%` }}></div>
                     </div>
                  </div>
                  <button onClick={() => onChangeView(ViewState.ACTIVITY)} className="w-full bg-slate-900 text-white py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
@@ -157,7 +158,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
               <Activity size={28} />
            </div>
            <div className="flex-1">
-              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">WellTrack Tip</h4>
+              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">Coach Virtuel</h4>
               <p className="text-sm text-slate-800 font-bold leading-tight italic">"{localTip}"</p>
            </div>
            <ChevronRight className="text-slate-300 group-hover:translate-x-1 transition-transform" size={24} />
@@ -166,7 +167,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
 
       {/* Grille d'actions */}
       <div className="px-8 mt-14">
-        <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Santé</h3>
+        <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Écosystème</h3>
         <div className="grid grid-cols-2 gap-8">
           <NavButton label="Fitness" icon={<Activity />} color="bg-orange-500" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
           <NavButton label="Nutrition" icon={<Utensils />} color="bg-green-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
