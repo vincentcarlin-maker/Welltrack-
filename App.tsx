@@ -8,18 +8,9 @@ import { GamificationView } from './features/GamificationView';
 import { ProfileView } from './features/ProfileView';
 import { COM_Complements } from './features/complements/COM_Complements';
 import { JOU_Journal } from './features/journal/JOU_Journal';
+import { REC_Recommandations } from './features/recommendations/REC_Recommandations';
 import { useAppData } from './hooks/useAppData';
 import { ViewState } from './types';
-
-const PlaceholderView = ({ title }: { title: string }) => (
-  <div className="flex flex-col items-center justify-center h-full text-slate-500 p-6 text-center">
-    <div className="bg-slate-100 p-4 rounded-full mb-4">
-      <span className="text-4xl grayscale">🚧</span>
-    </div>
-    <h2 className="text-xl font-bold text-slate-800 mb-2">{title}</h2>
-    <p className="text-sm text-slate-400">Ce module sera disponible dans la prochaine mise à jour.</p>
-  </div>
-);
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewState>(ViewState.HOME);
@@ -49,7 +40,7 @@ export default function App() {
       case ViewState.JOURNAL:
         return <JOU_Journal onSave={(entry) => { actions.addJournalEntry(entry); setActiveView(ViewState.HOME); }} onCancel={() => setActiveView(ViewState.HOME)} />;
       case ViewState.RECOMMENDATIONS:
-        return <PlaceholderView title="Recommandations IA" />;
+        return <REC_Recommandations stats={stats} onBack={() => setActiveView(ViewState.HOME)} />;
       default:
         return <DashboardView user={user} stats={stats} onChangeView={setActiveView} onSyncHealth={actions.syncHealthData} />;
     }
