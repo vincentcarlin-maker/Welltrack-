@@ -4,7 +4,7 @@ import { ViewState } from '../types';
 import { Home, Activity, Utensils, Trophy, User } from 'lucide-react';
 
 interface LayoutProps {
-  children: React.Node;
+  children: React.ReactNode;
   activeView: ViewState;
   onChangeView: (view: ViewState) => void;
 }
@@ -29,13 +29,19 @@ const NavItem: React.FC<{
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeView }) => {
   return (
     <div className="flex flex-col h-full w-full bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
-      {/* Contenu principal scrollable */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth w-full no-scrollbar relative pb-20">
+      {/* 
+          Zone principale qui occupe tout l'espace disponible.
+          overflow-y-auto permet le scroll interne sans faire bouger la barre de navigation.
+      */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth w-full no-scrollbar relative">
         {children}
       </main>
 
-      {/* Barre de navigation fixée strictement en bas */}
-      <nav className="fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+      {/* 
+          Barre de navigation : placée à la fin du flex-col.
+          Elle est "flex-none" pour ne pas être écrasée.
+      */}
+      <nav className="flex-none bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] bg-opacity-90 backdrop-blur-lg">
         <div className="flex justify-around items-center w-full max-w-lg mx-auto h-[70px] px-2 pb-[env(safe-area-inset-bottom)]">
           <NavItem 
             icon={<Home size={24} strokeWidth={activeView === ViewState.HOME ? 2.5 : 2} />} 
