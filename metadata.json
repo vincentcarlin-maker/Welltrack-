@@ -1,5 +1,7 @@
 {
   "name": "WellTrack",
-  "description": "Une application de suivi de santé holistique alimentée par l'IA pour l'activité, la nutrition, le sommeil et le bien-être.",
-  "requestFramePermissions": []
+  "description": "Suivi de santé holistique avec IA : Musculation, Nutrition, Sommeil et Gamification.",
+  "requestFramePermissions": [
+    "camera"
+  ]
 }
