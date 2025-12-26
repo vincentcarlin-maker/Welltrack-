@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Layout } from './components/Layout';
 import { DashboardView } from './features/DashboardView';
@@ -8,6 +7,7 @@ import { SleepView } from './features/SleepView';
 import { GamificationView } from './features/GamificationView';
 import { ProfileView } from './features/ProfileView';
 import { COM_Complements } from './features/complements/COM_Complements';
+import { JOU_Journal } from './features/journal/JOU_Journal';
 import { useAppData } from './hooks/useAppData';
 import { ViewState } from './types';
 
@@ -47,7 +47,7 @@ export default function App() {
       case ViewState.PROFILE:
         return <ProfileView user={user} onUpdate={actions.updateUser} />;
       case ViewState.JOURNAL:
-        return <PlaceholderView title="Journal de Santé" />;
+        return <JOU_Journal onSave={(entry) => { actions.addJournalEntry(entry); setActiveView(ViewState.HOME); }} onCancel={() => setActiveView(ViewState.HOME)} />;
       case ViewState.RECOMMENDATIONS:
         return <PlaceholderView title="Recommandations IA" />;
       default:
