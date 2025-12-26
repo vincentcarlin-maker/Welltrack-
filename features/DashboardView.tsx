@@ -35,17 +35,10 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   const handleRefresh = async () => {
     if (isRefreshing) return;
     setIsRefreshing(true);
-    
-    // Déclenche la synchronisation des données de santé
     await onSyncHealth();
-    
-    // Rafraîchit le conseil IA
     const newTip = await getDailyRecommendations("");
     setLocalTip(newTip);
-    
-    // Met à jour l'heure
     setLastUpdate(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
-    
     setTimeout(() => {
       setIsRefreshing(false);
     }, 1000);
@@ -54,9 +47,9 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   const stepProgress = Math.min((stats.dailySteps / 10000) * 100, 100);
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
+    <div className="bg-[#F8FAFC] min-h-screen pb-48 relative overflow-x-hidden">
       
-      {/* Premium Header - iPhone 17 Pro Optimized */}
+      {/* Header Premium */}
       <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[26rem] rounded-b-[5rem] relative pt-[calc(3rem+env(safe-area-inset-top))] px-8 text-white shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
         
@@ -64,9 +57,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
           <div>
             <h1 className="text-4xl font-black tracking-tighter">WellTrack</h1>
             <div className="flex items-center gap-2 mt-1">
-               <span className="text-blue-100/80 text-sm font-bold">Niveau {user.level}</span>
-               <div className="w-1 h-1 bg-blue-300 rounded-full"></div>
-               <span className="text-blue-100/80 text-sm font-bold">{user.points} XP</span>
+               <span className="text-blue-100/80 text-sm font-bold uppercase tracking-widest">Niveau {user.level}</span>
             </div>
           </div>
           
@@ -86,7 +77,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
               </button>
             </div>
             <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-blue-200/60 bg-black/10 px-2 py-1 rounded-lg backdrop-blur-sm">
-              <Clock size={10} /> Mis à jour : {lastUpdate}
+              <Clock size={10} /> {lastUpdate}
             </div>
           </div>
         </div>
@@ -97,7 +88,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                  <Zap className="text-white" size={28} />
               </div>
               <div>
-                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Série de victoires</p>
+                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Victoires</p>
                  <p className="text-3xl font-black">12 Jours</p>
               </div>
            </div>
@@ -105,19 +96,20 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
+      {/* Carte des Pas */}
       <div className="px-8 -mt-24 relative z-20">
-        <div className="bg-white rounded-[4rem] p-10 shadow-pro border border-white/50 relative overflow-hidden">
+        <div className="bg-white rounded-[4rem] p-10 shadow-pro border border-white relative overflow-hidden">
            <div className="flex justify-between items-center mb-10">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-blue-50 rounded-2xl">
                   <TrendingUp size={20} className="text-brand-blue" />
                 </div>
-                <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Statistiques</span>
+                <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Activité</span>
               </div>
-              <span className="text-[10px] font-black text-neon-green bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">État Optimal</span>
+              <span className="text-[10px] font-black text-neon-green bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">Optimal</span>
            </div>
 
-           <div className="flex flex-col md:flex-row items-center gap-12">
+           <div className="flex flex-col items-center gap-12">
               <div className="relative w-44 h-44 flex-shrink-0">
                  <svg className="w-full h-full transform -rotate-90">
                     <circle cx="88" cy="88" r="78" stroke="#F1F5F9" strokeWidth="16" fill="none" />
@@ -139,7 +131,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                  <div className="flex flex-col">
                     <div className="flex justify-between items-end mb-3">
                       <div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Calories brûlées</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Calories</span>
                         <span className="text-4xl font-black text-slate-900 tracking-tighter">{stats.dailyCalories} <span className="text-sm text-slate-400 font-bold">kcal</span></span>
                       </div>
                     </div>
@@ -147,7 +139,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                        <div className="bg-gradient-to-r from-orange-400 to-red-500 h-full rounded-full shadow-lg transition-all duration-1000 ease-out" style={{ width: '65%' }}></div>
                     </div>
                  </div>
-                 <button onClick={() => onChangeView(ViewState.ACTIVITY)} className="w-full bg-slate-900 text-white py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all hover:bg-slate-800">
+                 <button onClick={() => onChangeView(ViewState.ACTIVITY)} className="w-full bg-slate-900 text-white py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
                    Analyse Détaillée
                  </button>
               </div>
@@ -155,42 +147,28 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
-      {/* Recommendations adaptive card */}
+      {/* Conseil IA */}
       <div className="px-8 mt-12">
         <div className="bg-white p-7 rounded-[3rem] border border-slate-100 shadow-pro flex items-center gap-6 group cursor-pointer active:scale-98 transition-all" onClick={() => onChangeView(ViewState.RECOMMENDATIONS)}>
            <div className="bg-gradient-to-br from-indigo-500 to-blue-700 p-5 rounded-[2rem] text-white shadow-pro group-hover:rotate-6 transition-transform">
               <Activity size={28} />
            </div>
            <div className="flex-1">
-              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">
-                WellTrack Smart Tip
-              </h4>
+              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">WellTrack Tip</h4>
               <p className="text-sm text-slate-800 font-bold leading-tight italic">"{localTip}"</p>
            </div>
            <ChevronRight className="text-slate-300 group-hover:translate-x-1 transition-transform" size={24} />
         </div>
       </div>
 
-      {/* Grid with larger touch targets */}
+      {/* Grille d'actions */}
       <div className="px-8 mt-14">
         <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Santé</h3>
         <div className="grid grid-cols-2 gap-8">
-          <NavButton 
-            label="Fitness" icon={<Activity />} color="bg-orange-500" 
-            onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0"
-          />
-          <NavButton 
-            label="Nutrition" icon={<Utensils />} color="bg-green-500" 
-            onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75"
-          />
-          <NavButton 
-            label="Sommeil" icon={<Moon />} color="bg-blue-600" 
-            onClick={() => onChangeView(ViewState.SLEEP)} delay="delay-150"
-          />
-          <NavButton 
-            label="Succès" icon={<Award />} color="bg-purple-600" 
-            onClick={() => onChangeView(ViewState.GAMIFICATION)} delay="delay-200"
-          />
+          <NavButton label="Fitness" icon={<Activity />} color="bg-orange-500" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
+          <NavButton label="Nutrition" icon={<Utensils />} color="bg-green-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
+          <NavButton label="Sommeil" icon={<Moon />} color="bg-blue-600" onClick={() => onChangeView(ViewState.SLEEP)} delay="delay-150" />
+          <NavButton label="Succès" icon={<Award />} color="bg-purple-600" onClick={() => onChangeView(ViewState.GAMIFICATION)} delay="delay-200" />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" style="background-color: #F8FAFC;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
@@ -20,26 +20,16 @@
               brand: {
                 blue: '#2563EB',
                 dark: '#1E3A8A',
-                light: '#EFF6FF',
+                light: '#F8FAFC',
                 accent: '#3B82F6',
               },
-              neon: {
-                blue: '#0ea5e9',
-                purple: '#8b5cf6',
-                green: '#10b981',
-                pink: '#ec4899',
-              }
             },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
             },
-            borderRadius: {
-              '4xl': '2.5rem',
-              '5xl': '3.5rem',
-            },
             boxShadow: {
-              'pro': '0 20px 50px -12px rgba(0,0,0,0.1)',
-              'glow': '0 0 20px rgba(59, 130, 246, 0.4)'
+              'pro': '0 20px 50px -12px rgba(0,0,0,0.08)',
+              'glow': '0 0 20px rgba(59, 130, 246, 0.3)'
             }
           },
         },
@@ -50,26 +40,22 @@
         --safe-top: env(safe-area-inset-top);
         --safe-bottom: env(safe-area-inset-bottom);
       }
-      html, body {
+      /* On force le fond sur tous les éléments racines */
+      html, body, #root {
         height: 100%;
-        overflow: hidden; 
-        background-color: #F8FAFC;
-        color: #1e293b;
-        font-family: 'Inter', sans-serif;
-        overscroll-behavior-y: none;
-        -webkit-tap-highlight-color: transparent;
+        margin: 0;
+        padding: 0;
+        background-color: #F8FAFC !important;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior: none;
       }
       #root {
-        height: 100dvh; 
-        width: 100%;
         display: flex;
         flex-direction: column;
       }
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      .scroll-smooth-mobile {
-        -webkit-overflow-scrolling: touch;
-      }
     </style>
   <script type="importmap">
 {
