@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { UserProfile } from '../types';
-import { Save, User, Ruler, Weight, Calendar, Activity, Info } from 'lucide-react';
+import { User, Ruler, Weight, Calendar, Activity, Info } from 'lucide-react';
 
 interface ProfileViewProps {
   user: UserProfile;
@@ -8,7 +9,6 @@ interface ProfileViewProps {
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate }) => {
-  // On initialise avec des strings pour pouvoir vider les champs complètement
   const [formData, setFormData] = useState({
     name: user.name,
     age: user.age.toString(),
@@ -19,14 +19,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate }) => {
   const [isSaved, setIsSaved] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    // On garde la valeur en string pendant la saisie
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setIsSaved(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Conversion en nombres uniquement à l'envoi
     onUpdate({
       ...formData,
       age: Number(formData.age) || 0,
@@ -37,22 +35,20 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate }) => {
     setTimeout(() => setIsSaved(false), 2000);
   };
 
-  // Variables numériques pour les calculs en temps réel
   const weightNum = Number(formData.weight) || 0;
   const heightNum = Number(formData.height) || 0;
   const ageNum = Number(formData.age) || 0;
 
-  // Calculs
   const bmi = heightNum > 0 ? (weightNum / ((heightNum / 100) ** 2)).toFixed(1) : '0';
   const bmr = formData.gender === 'M'
     ? (10 * weightNum) + (6.25 * heightNum) - (5 * ageNum) + 5
     : (10 * weightNum) + (6.25 * heightNum) - (5 * ageNum) - 161;
 
   return (
-    <div className="p-6 space-y-6 pb-24 animate-in slide-in-from-right duration-300">
+    <div className="p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] space-y-6 pb-24 animate-in slide-in-from-right duration-300">
       <header className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-           <User className="text-neon-blue" /> Mon Profil
+           <User className="text-brand-blue" /> Mon Profil
         </h2>
       </header>
 
@@ -126,11 +122,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate }) => {
           </div>
         </div>
 
-        {/* Metrics Card */}
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
             <Activity className="absolute -right-4 -top-4 text-slate-700 opacity-20" size={100} />
             <h3 className="font-bold text-lg mb-4 relative z-10 flex items-center gap-2">
-                <Info size={18} className="text-neon-blue" />
+                <Info size={18} className="text-brand-blue" />
                 Vos Métriques
             </h3>
             <div className="grid grid-cols-2 gap-6 relative z-10">
@@ -143,8 +138,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate }) => {
                 </div>
                 <div>
                     <span className="text-slate-400 text-xs uppercase block mb-1">Métabolisme Base</span>
-                    <span className="text-3xl font-black text-neon-green">{Math.round(bmr > 0 ? bmr : 0)}</span>
-                    <span className="text-xs text-slate-400 block mt-1">kcal / jour (repos)</span>
+                    <span className="text-3xl font-black text-green-500">{Math.round(bmr > 0 ? bmr : 0)}</span>
+                    <span className="text-xs text-slate-400 block mt-1">kcal / jour</span>
                 </div>
             </div>
         </div>

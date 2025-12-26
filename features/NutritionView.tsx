@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Meal } from '../types';
-import { Search, Plus, ScanBarcode, ChevronRight } from 'lucide-react';
+import { Search, Plus, ScanBarcode } from 'lucide-react';
 import { NUT_AjoutRepas } from './nutrition/NUT_AjoutRepas';
 import { NUT_AnalyseRepas } from './nutrition/NUT_AnalyseRepas';
 
@@ -27,7 +27,7 @@ export const NutritionView: React.FC<NutritionViewProps> = ({ meals, dailyCalori
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-24 pt-6 px-6 animate-in fade-in duration-300">
+    <div className="bg-slate-50 min-h-screen pb-24 pt-[calc(1.5rem+env(safe-area-inset-top))] px-6 animate-in fade-in duration-300">
        <header className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Nutrition</h1>
@@ -74,7 +74,7 @@ export const NutritionView: React.FC<NutritionViewProps> = ({ meals, dailyCalori
              <span className="text-xs font-bold text-slate-400">{meals.length} repas</span>
           </div>
           <div className="space-y-4">
-             {meals.map((meal, idx) => (
+             {meals.map((meal) => (
                 <div key={meal.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-[0.98] transition-transform">
                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                       <img src={meal.imageUrl || `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80`} className="w-full h-full object-cover" alt="" />
@@ -92,7 +92,7 @@ export const NutritionView: React.FC<NutritionViewProps> = ({ meals, dailyCalori
           </div>
        </div>
 
-       <div className="fixed bottom-24 right-6 flex flex-col gap-4">
+       <div className="fixed bottom-24 right-6 flex flex-col gap-4 z-[90]">
           <button onClick={() => setSubView('ANALYZE_AI')} className="w-14 h-14 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center justify-center active:scale-90 transition-transform border border-white/10">
              <ScanBarcode size={24} />
           </button>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { UserProfile } from '../types';
 import { Trophy, Flame, Target, Crown, Share2, Medal } from 'lucide-react';
@@ -25,7 +26,7 @@ export const GamificationView: React.FC<GamificationViewProps> = ({ user }) => {
   const progressPercent = (user.points % 1000) / 10;
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-24 pt-6 px-6">
+    <div className="bg-slate-50 min-h-screen pb-24 pt-[calc(1.5rem+env(safe-area-inset-top))] px-6">
        <header className="mb-8 flex justify-between items-start">
           <div>
              <h1 className="text-2xl font-bold text-slate-900">Défis & Succès</h1>
@@ -95,12 +96,9 @@ export const GamificationView: React.FC<GamificationViewProps> = ({ user }) => {
           <div className="grid grid-cols-3 gap-4">
              {badgesList.map(badge => (
                 <div key={badge.id} className={`aspect-square rounded-3xl flex flex-col items-center justify-center p-2 relative group overflow-hidden ${badge.unlocked ? 'bg-white shadow-md border border-slate-100' : 'bg-slate-100 opacity-60 grayscale'}`}>
-                   {/* Glass Shine Effect */}
                    {badge.unlocked && <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-transparent opacity-50"></div>}
-                   
                    <span className="text-4xl mb-2 drop-shadow-sm transform group-active:scale-110 transition-transform">{badge.icon}</span>
                    <span className="text-[10px] font-bold text-slate-600 text-center leading-tight">{badge.name}</span>
-                   
                    {badge.unlocked && badge.rarity === 'Epic' && (
                       <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
                    )}

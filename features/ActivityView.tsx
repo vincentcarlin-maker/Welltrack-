@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ActivityLog, WorkoutBlock } from '../types';
+import { ActivityLog } from '../types';
 import { useAppData } from '../hooks/useAppData';
 import { ACT_Musculation } from './musculation/ACT_Musculation';
 import { Settings, Dumbbell, X, Check } from 'lucide-react';
@@ -41,7 +41,7 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-24 px-6 pt-6 relative">
+    <div className="bg-slate-50 min-h-screen pb-24 px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] relative">
       <header className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-slate-800">Activité</h2>
         <div className="flex gap-2">
@@ -60,16 +60,14 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
             onAddProgram={actions.addProgram}
             onFinishSession={(duration, blocks, programId) => {
                const now = new Date().toISOString();
-               // 1. Ajouter à l'historique global
                actions.addActivity({
                    id: Date.now().toString(),
                    type: 'Musculation',
                    durationMinutes: duration,
-                   calories: duration * 6, // Approx
+                   calories: duration * 6,
                    date: now,
                    blocks: blocks
                });
-               // 2. Mettre à jour le programme spécifique
                if (programId) {
                   actions.updateProgram(programId, { 
                      lastPerformed: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) 
@@ -81,7 +79,7 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
 
       {/* Modale Paramètres Matériel */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-4">
            <div className="bg-white w-full max-w-md rounded-[2rem] p-6 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col">
               <header className="flex justify-between items-center mb-6 flex-shrink-0">
                  <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">

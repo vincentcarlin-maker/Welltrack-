@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ViewState, UserProfile } from '../types';
-import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText, Pill } from 'lucide-react';
+import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText } from 'lucide-react';
 import { getDailyRecommendations } from '../services/geminiService';
 
 interface DashboardProps {
@@ -49,10 +49,13 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
       
-      {/* Header Premium */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[26rem] rounded-b-[5rem] relative pt-[calc(3rem+env(safe-area-inset-top))] px-8 text-white shadow-2xl">
+      {/* Header Premium avec correction de la zone sécurisée */}
+      <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[28rem] rounded-b-[5rem] relative px-8 text-white shadow-2xl transition-all duration-500">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
         
+        {/* Espaceur de zone sécurisée */}
+        <div className="h-[calc(env(safe-area-inset-top)+2rem)] w-full"></div>
+
         <div className="flex justify-between items-start relative z-10">
           <div>
             <h1 className="text-4xl font-black tracking-tighter">WellTrack</h1>
@@ -82,7 +85,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
           </div>
         </div>
 
-        <div className="mt-12 bg-white/10 backdrop-blur-md rounded-[3rem] p-6 border border-white/15 flex justify-between items-center relative z-10 shadow-xl">
+        <div className="mt-10 bg-white/10 backdrop-blur-md rounded-[3rem] p-6 border border-white/15 flex justify-between items-center relative z-10 shadow-xl">
            <div className="flex items-center gap-5">
               <div className="w-14 h-14 bg-gradient-to-tr from-yellow-300 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3">
                  <Zap className="text-white" size={28} />
@@ -106,7 +109,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                 </div>
                 <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Activité</span>
               </div>
-              <span className="text-[10px] font-black text-neon-green bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">Optimal</span>
+              <span className="text-[10px] font-black text-green-500 bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">Optimal</span>
            </div>
 
            <div className="flex flex-col items-center gap-12">
