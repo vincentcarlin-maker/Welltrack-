@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ViewState } from '../types';
-import { Home, Activity, Utensils, Trophy } from 'lucide-react';
+import { Home, Activity, Utensils, Trophy, User } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -33,7 +33,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeVi
         {children}
       </main>
 
-      {/* Barre de navigation fixée tout en bas */}
+      {/* Barre de navigation fixée tout en bas avec l'onglet Profil ajouté */}
       <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] pb-[env(safe-area-inset-bottom)] flex items-center justify-around h-[calc(64px+env(safe-area-inset-bottom))]">
         <div className="flex justify-around items-center w-full max-w-lg mx-auto h-[64px] px-2">
           <NavItem 
@@ -59,6 +59,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeVi
             label="Défis" 
             isActive={activeView === ViewState.GAMIFICATION} 
             onClick={() => onChangeView(ViewState.GAMIFICATION)} 
+          />
+          <NavItem 
+            icon={<User size={22} strokeWidth={activeView === ViewState.PROFILE ? 2.5 : 2} />} 
+            label="Profil" 
+            isActive={activeView === ViewState.PROFILE} 
+            onClick={() => onChangeView(ViewState.PROFILE)} 
           />
         </div>
       </nav>
