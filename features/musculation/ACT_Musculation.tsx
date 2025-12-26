@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { WorkoutProgram, WorkoutBlock, ActivityLog } from '../../types';
-import { Play, ChevronRight, PenTool, History, RotateCw, CheckCircle2, Zap, BrainCircuit } from 'lucide-react';
+import { Play, ChevronRight, PenTool, History, Calendar, CheckCircle2, Zap, BrainCircuit } from 'lucide-react';
 import { ACT_CreerEntrainement } from './ACT_CreerEntrainement';
 import { ACT_SeanceEnCours } from './ACT_SeanceEnCours';
 import { ACT_Calendrier } from './ACT_Calendrier';
@@ -21,7 +21,6 @@ type MuscuView = 'HUB' | 'CREATE' | 'ACTIVE_SESSION' | 'CALENDAR' | 'HISTORY';
 export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, userEquipment, activities, onAddProgram, onFinishSession }) => {
   const [currentView, setCurrentView] = useState<MuscuView>('HUB');
   const [selectedProgram, setSelectedProgram] = useState<WorkoutProgram | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [localActivities, setLocalActivities] = useState<ActivityLog[]>(activities);
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
     setCurrentView('ACTIVE_SESSION');
   };
 
-  // Calcul du readiness score basé sur la dernière activité
   const calculateReadiness = () => {
     if (localActivities.length === 0) return 100;
     const lastAct = localActivities.filter(a => a.type === 'Musculation')[0];
@@ -60,7 +58,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
         </div>
         <div className="flex gap-2">
           <button onClick={() => setCurrentView('CALENDAR')} className="w-12 h-12 bg-white rounded-2xl shadow-pro border border-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-all">
-             <RotateCw size={20} />
+             <Calendar size={20} className="text-brand-blue" />
           </button>
           <button onClick={() => setCurrentView('HISTORY')} className="w-12 h-12 bg-white rounded-2xl shadow-pro border border-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform">
              <History size={20} />
@@ -68,7 +66,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
         </div>
       </header>
 
-      {/* Muscle Readiness Map Section */}
+      {/* Section Récupération */}
       <section className="animate-in slide-in-from-bottom duration-700">
         <div className="flex justify-between items-end mb-4 px-2">
           <div>
@@ -83,7 +81,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
         <RecoveryMuscleMap activities={localActivities} />
       </section>
 
-      {/* Smart Suggestion UI */}
+      {/* Suggestion Coach */}
       <div className="bg-slate-900 rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden group active:scale-98 transition-all cursor-pointer" onClick={() => programs[0] && handleStartSession(programs[0])}>
          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl"></div>
          <div className="flex items-center gap-4 relative z-10">
@@ -108,7 +106,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
         </button>
       </div>
 
-      {/* Mes Programmes */}
+      {/* Liste des programmes */}
       <div>
         <div className="flex justify-between items-center mb-6 px-2">
             <h3 className="font-black text-slate-900 text-xl tracking-tighter">Mes Programmes</h3>

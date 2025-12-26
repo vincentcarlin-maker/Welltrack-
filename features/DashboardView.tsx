@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ViewState, UserProfile } from '../types';
-import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText } from 'lucide-react';
+import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText, Calendar } from 'lucide-react';
 import { getDailyRecommendations } from '../services/geminiService';
 import { WellTrackLogo } from '../components/WellTrackLogo';
 
@@ -50,11 +50,9 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
       
-      {/* Header Premium avec Nouveau Logo */}
+      {/* Header Premium */}
       <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[28rem] rounded-b-[5rem] relative px-8 text-white shadow-2xl transition-all duration-500">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-        
-        {/* Espaceur de zone sécurisée */}
         <div className="h-[calc(env(safe-area-inset-top)+2rem)] w-full"></div>
 
         <div className="flex justify-between items-start relative z-10">
@@ -100,7 +98,6 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
-      {/* Reste du Dashboard... */}
       <div className="px-8 -mt-24 relative z-20">
         <div className="bg-white rounded-[4rem] p-10 shadow-pro border border-white relative overflow-hidden">
            <div className="flex justify-between items-center mb-10">
@@ -165,14 +162,14 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
-      {/* Grille d'actions */}
+      {/* Grille d'actions réorganisée */}
       <div className="px-8 mt-14">
         <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Écosystème</h3>
         <div className="grid grid-cols-2 gap-8">
           <NavButton label="Fitness" icon={<Activity />} color="bg-orange-500" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
           <NavButton label="Nutrition" icon={<Utensils />} color="bg-green-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
           <NavButton label="Journal" icon={<NotebookText />} color="bg-indigo-600" onClick={() => onChangeView(ViewState.JOURNAL)} delay="delay-150" />
-          <NavButton label="Succès" icon={<Award />} color="bg-purple-600" onClick={() => onChangeView(ViewState.GAMIFICATION)} delay="delay-200" />
+          <NavButton label="Calendrier" icon={<Calendar />} color="bg-blue-600" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-200" />
         </div>
       </div>
     </div>
