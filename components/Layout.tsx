@@ -19,22 +19,22 @@ const NavItem: React.FC<{
     onClick={onClick}
     className={`flex flex-col items-center justify-center w-full h-full transition-all active:opacity-60 ${isActive ? 'text-brand-blue' : 'text-slate-400'}`}
   >
-    <div className={`transition-all duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_10px_rgba(37,99,235,0.2)]' : 'scale-100'}`}>
+    <div className={`transition-all duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
       {icon}
     </div>
-    <span className={`text-[9px] mt-1 font-black uppercase tracking-widest transition-opacity ${isActive ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
+    <span className={`text-[8px] mt-1 font-black uppercase tracking-widest transition-opacity ${isActive ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
   </button>
 );
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeView }) => {
   return (
     <div className="flex flex-col h-full w-full bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
-      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth-mobile w-full no-scrollbar relative bg-[#F8FAFC]">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth-mobile w-full no-scrollbar relative">
         {children}
       </main>
 
-      {/* Barre de navigation fixée tout en bas avec l'onglet Profil ajouté */}
-      <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] pb-[env(safe-area-inset-bottom)] flex items-center justify-around h-[calc(64px+env(safe-area-inset-bottom))]">
+      {/* Barre de navigation fixée tout en bas avec fond plein */}
+      <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-slate-100 shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
         <div className="flex justify-around items-center w-full max-w-lg mx-auto h-[64px] px-2">
           <NavItem 
             icon={<Home size={22} strokeWidth={activeView === ViewState.HOME ? 2.5 : 2} />} 
@@ -67,6 +67,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeVi
             onClick={() => onChangeView(ViewState.PROFILE)} 
           />
         </div>
+        {/* Espaceur pour l'indicateur d'accueil iOS */}
+        <div className="h-[env(safe-area-inset-bottom)] bg-white w-full"></div>
       </nav>
     </div>
   );
