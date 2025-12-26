@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ViewState } from '../types';
-import { Home, Activity, Moon, Utensils, Trophy } from 'lucide-react';
+import { Home, Activity, Utensils, Trophy } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,14 +28,11 @@ const NavItem: React.FC<{
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeView }) => {
   return (
-    // On utilise min-h-screen et bg-brand-light pour couvrir tout l'espace
     <div className="flex flex-col h-full w-full bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
-      {/* Zone de contenu - on s'assure qu'elle remplit bien tout l'espace flex */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth-mobile w-full no-scrollbar relative bg-[#F8FAFC]">
         {children}
       </main>
 
-      {/* Navigation Flottante - sans aucun fond propre au conteneur parent */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] px-8 pb-[calc(16px+env(safe-area-inset-bottom))] pointer-events-none">
         <nav className="bg-white/60 backdrop-blur-3xl border border-white/50 shadow-[0_10px_40px_rgba(0,0,0,0.06)] rounded-[2.5rem] flex justify-around items-center h-[72px] max-w-md mx-auto px-4 pointer-events-auto ring-1 ring-black/[0.03]">
           <NavItem 
@@ -55,12 +52,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeVi
             label="Manger" 
             isActive={activeView === ViewState.NUTRITION} 
             onClick={() => onChangeView(ViewState.NUTRITION)} 
-          />
-          <NavItem 
-            icon={<Moon size={20} strokeWidth={activeView === ViewState.SLEEP ? 2.5 : 2} />} 
-            label="Repos" 
-            isActive={activeView === ViewState.SLEEP} 
-            onClick={() => onChangeView(ViewState.SLEEP)} 
           />
           <NavItem 
             icon={<Trophy size={20} strokeWidth={activeView === ViewState.GAMIFICATION ? 2.5 : 2} />} 

@@ -1,9 +1,9 @@
+
 import React, { useState } from 'react';
 import { Layout } from './components/Layout';
 import { DashboardView } from './features/DashboardView';
 import { ActivityView } from './features/ActivityView';
 import { NutritionView } from './features/NutritionView';
-import { SleepView } from './features/SleepView';
 import { GamificationView } from './features/GamificationView';
 import { ProfileView } from './features/ProfileView';
 import { COM_Complements } from './features/complements/COM_Complements';
@@ -14,7 +14,7 @@ import { ViewState } from './types';
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewState>(ViewState.HOME);
-  const { user, stats, activities, meals, sleepHistory, supplements, actions } = useAppData();
+  const { user, stats, activities, meals, supplements, actions } = useAppData();
 
   const renderContent = () => {
     switch (activeView) {
@@ -27,8 +27,6 @@ export default function App() {
         />;
       case ViewState.ACTIVITY:
         return <ActivityView activities={activities} dailySteps={stats.dailySteps} addActivity={actions.addActivity} />;
-      case ViewState.SLEEP:
-        return <SleepView sleepHistory={sleepHistory} />;
       case ViewState.NUTRITION:
         return <NutritionView meals={meals} dailyCalories={stats.dailyCalories} addMeal={actions.addMeal} />;
       case ViewState.SUPPLEMENTS:

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ViewState, UserProfile } from '../types';
-import { Activity, Moon, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock } from 'lucide-react';
+import { Activity, Utensils, Zap, ChevronRight, TrendingUp, Award, RotateCw, Clock, NotebookText, Pill } from 'lucide-react';
 import { getDailyRecommendations } from '../services/geminiService';
 
 interface DashboardProps {
@@ -161,13 +161,13 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
-      {/* Grille d'actions */}
+      {/* Grille d'actions - Sommeil remplacé par Journal pour garder la structure 2x2 */}
       <div className="px-8 mt-14">
         <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Santé</h3>
         <div className="grid grid-cols-2 gap-8">
           <NavButton label="Fitness" icon={<Activity />} color="bg-orange-500" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
           <NavButton label="Nutrition" icon={<Utensils />} color="bg-green-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
-          <NavButton label="Sommeil" icon={<Moon />} color="bg-blue-600" onClick={() => onChangeView(ViewState.SLEEP)} delay="delay-150" />
+          <NavButton label="Journal" icon={<NotebookText />} color="bg-indigo-600" onClick={() => onChangeView(ViewState.JOURNAL)} delay="delay-150" />
           <NavButton label="Succès" icon={<Award />} color="bg-purple-600" onClick={() => onChangeView(ViewState.GAMIFICATION)} delay="delay-200" />
         </div>
       </div>

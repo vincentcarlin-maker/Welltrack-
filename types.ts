@@ -2,7 +2,6 @@
 export enum ViewState {
   HOME = 'HOME',
   ACTIVITY = 'ACTIVITY',
-  SLEEP = 'SLEEP',
   NUTRITION = 'NUTRITION',
   SUPPLEMENTS = 'SUPPLEMENTS',
   JOURNAL = 'JOURNAL',
