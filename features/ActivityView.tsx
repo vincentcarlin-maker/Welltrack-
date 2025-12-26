@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { ActivityLog } from '../types';
+import { ActivityLog, WorkoutBlock } from '../types';
 import { useAppData } from '../hooks/useAppData';
 import { ACT_Musculation } from './musculation/ACT_Musculation';
 import { Settings, Dumbbell, X, Check } from 'lucide-react';
@@ -57,20 +58,28 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
             userEquipment={user.availableEquipment}
             activities={activities}
             onAddProgram={actions.addProgram}
-            onFinishSession={(duration, blocks) => {
+            onFinishSession={(duration, blocks, programId) => {
+               const now = new Date().toISOString();
+               // 1. Ajouter à l'historique global
                actions.addActivity({
                    id: Date.now().toString(),
                    type: 'Musculation',
                    durationMinutes: duration,
                    calories: duration * 6, // Approx
-                   date: new Date().toISOString(),
+                   date: now,
                    blocks: blocks
                });
+               // 2. Mettre à jour le programme spécifique
+               if (programId) {
+                  actions.updateProgram(programId, { 
+                     lastPerformed: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) 
+                  });
+               }
             }}
          />
       </div>
 
-      {/* Modale Paramètres Matériel - Centrée */}
+      {/* Modale Paramètres Matériel */}
       {showSettings && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-4">
            <div className="bg-white w-full max-w-md rounded-[2rem] p-6 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col">
@@ -84,8 +93,7 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
               </header>
 
               <div className="space-y-6 overflow-y-auto pr-1">
-                 <p className="text-sm text-slate-500">Sélectionnez le matériel dont vous disposez. Cela permettra de filtrer les exercices et de générer des programmes adaptés.</p>
-                 
+                 <p className="text-sm text-slate-500">Sélectionnez le matériel dont vous disposez.</p>
                  <div className="flex flex-wrap gap-2">
                     {ALL_EQUIPMENT.map(eq => {
                        const isSelected = tempEquip.includes(eq);
@@ -101,8 +109,7 @@ export const ActivityView: React.FC<ActivityViewProps> = ({ activities, dailySte
                        );
                     })}
                  </div>
-
-                 <button onClick={saveSettings} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-95 transition-transform sticky bottom-0">
+                 <button onClick={saveSettings} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-transform sticky bottom-0">
                     Enregistrer le matériel
                  </button>
               </div>

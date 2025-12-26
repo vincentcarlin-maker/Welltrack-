@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { WorkoutProgram, WorkoutBlock, ActivityLog } from '../../types';
-import { ChevronLeft, Play, Pause, CheckCircle2, FastForward, Activity, Timer, Plus, SkipForward, Trophy, Flame, Dumbbell, Save, Lightbulb } from 'lucide-react';
+import { ChevronLeft, Play, Pause, CheckCircle2, FastForward, Activity, Timer, Plus, SkipForward, Trophy, Flame, Dumbbell, Save, Lightbulb, Clock } from 'lucide-react';
 import { getProgressionRecommendation } from './logic/progressionAlgo';
 
 interface Props {
   program: WorkoutProgram;
   history: ActivityLog[];
-  onFinish: (duration: number, blocks: WorkoutBlock[]) => void;
+  onFinish: (duration: number, blocks: WorkoutBlock[], programId: string) => void;
   onCancel: () => void;
 }
 
@@ -27,6 +27,9 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
   const [currentRpe, setCurrentRpe] = useState<number>(8);
   const [sessionBlocks, setSessionBlocks] = useState<WorkoutBlock[]>(JSON.parse(JSON.stringify(program.blocks)));
 
+  // Tracking du temps par exercice
+  const lastTimestampRef = useRef(0);
+
   const currentBlock = sessionBlocks[blockIdx];
   const currentEx = currentBlock.exercises[exInBlockIdx];
   const isSuperset = currentBlock.exercises.length > 1;
@@ -34,7 +37,11 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
 
   useEffect(() => {
     let interval: any;
-    if (isRunning && !isSummary) interval = setInterval(() => setElapsedTime(p => p + 1), 1000);
+    if (isRunning && !isSummary) {
+      interval = setInterval(() => {
+        setElapsedTime(p => p + 1);
+      }, 1000);
+    }
     return () => clearInterval(interval);
   }, [isRunning, isSummary]);
 
@@ -74,6 +81,17 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
   };
 
   const handleValidateSet = () => {
+    // Calcul du temps passé sur cette série
+    const currentTime = elapsedTime;
+    const timeSpent = currentTime - lastTimestampRef.current;
+    
+    // Accumuler le temps sur l'exercice en cours
+    if (!currentEx.durationSeconds) currentEx.durationSeconds = 0;
+    currentEx.durationSeconds += timeSpent;
+    
+    // Mettre à jour le dernier timestamp
+    lastTimestampRef.current = currentTime;
+
     currentEx.rpe = currentRpe;
     const isLastBlock = blockIdx === sessionBlocks.length - 1;
     const isLastExInBlock = exInBlockIdx === currentBlock.exercises.length - 1;
@@ -95,6 +113,9 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
 
   const proceedToNextStep = () => {
     setIsResting(false);
+    // On ne compte pas le temps de repos dans l'exercice
+    lastTimestampRef.current = elapsedTime;
+
     if (isSuperset) {
         if (exInBlockIdx < currentBlock.exercises.length - 1) {
             setExInBlockIdx(exInBlockIdx + 1);
@@ -143,7 +164,7 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                     <div className="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
                         <Timer className="text-blue-400 mb-2" />
                         <div className="text-2xl font-bold">{Math.ceil(elapsedTime / 60)} <span className="text-sm">min</span></div>
-                        <div className="text-xs text-slate-500 uppercase font-bold">Durée</div>
+                        <div className="text-xs text-slate-500 uppercase font-bold">Durée Totale</div>
                     </div>
                     <div className="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
                         <Dumbbell className="text-purple-400 mb-2" />
@@ -165,13 +186,13 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
 
             <div className="mt-auto pt-6 space-y-3">
                 <button 
-                    onClick={() => onFinish(Math.ceil(elapsedTime / 60), sessionBlocks)}
+                    onClick={() => onFinish(Math.ceil(elapsedTime / 60), sessionBlocks, program.id)}
                     className="w-full bg-white text-slate-900 py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2"
                 >
                     <Save size={20} /> Enregistrer la séance
                 </button>
                 <button onClick={onCancel} className="w-full py-4 text-slate-400 font-bold text-sm">
-                    Retour
+                    Quitter sans enregistrer
                 </button>
             </div>
         </div>

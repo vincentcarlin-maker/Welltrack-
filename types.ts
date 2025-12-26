@@ -30,6 +30,7 @@ export interface ExerciseDetail {
   weight: number;
   restSeconds: number;
   rpe?: number; // Rate of Perceived Exertion (1-10)
+  durationSeconds?: number; // Nouveau: Temps passé sur l'exercice
 }
 
 export interface WorkoutBlock {
@@ -45,9 +46,9 @@ export interface WorkoutProgram {
   name: string;
   programType: ProgramType;
   blocks: WorkoutBlock[];
-  imageUrl?: string; // Nouveau: Image de fond pour la carte
-  lastPerformed?: string; // Nouveau: Date de dernière réalisation
-  scheduledDay?: string; // Nouveau: Jour de la semaine prévu (ex: 'Lundi')
+  imageUrl?: string; 
+  lastPerformed?: string; 
+  scheduledDay?: string; 
 }
 
 export interface ActivityLog {
