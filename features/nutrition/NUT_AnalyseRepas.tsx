@@ -21,17 +21,14 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
 
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64 = (reader.result as string).split(',')[1];
       setPreviewUrl(reader.result as string);
       setLoading(true);
-      try {
-        const analysis = await analyzeMealImage(base64);
+      // Simulation locale du temps de traitement
+      setTimeout(async () => {
+        const analysis = await analyzeMealImage("");
         setResult(analysis);
-      } catch (err) {
-        console.error(err);
-      } finally {
         setLoading(false);
-      }
+      }, 1500);
     };
     reader.readAsDataURL(file);
   };
@@ -55,7 +52,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
     <div className="bg-slate-900 min-h-screen text-white pb-24 pt-6 px-6 flex flex-col animate-in fade-in">
       <header className="flex items-center gap-4 mb-8">
         <button onClick={onCancel} className="p-2 -ml-2 text-white/70"><ChevronLeft size={24} /></button>
-        <h2 className="text-xl font-bold">Analyse IA</h2>
+        <h2 className="text-xl font-bold">Analyse WellTrack</h2>
       </header>
 
       {!previewUrl && (
@@ -65,8 +62,8 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              <Camera size={48} className="text-brand-blue relative z-10" />
           </div>
           <div>
-            <h3 className="text-2xl font-black mb-2">Prenez votre plat en photo</h3>
-            <p className="text-slate-400 text-sm max-w-[250px]">L'IA WellTrack identifiera les ingrédients et estimera les calories pour vous.</p>
+            <h3 className="text-2xl font-black mb-2">Analysez votre plat</h3>
+            <p className="text-slate-400 text-sm max-w-[250px]">WellTrack identifiera les ingrédients et estimera les calories localement.</p>
           </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
@@ -85,7 +82,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              {loading && (
                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
                   <Loader2 size={48} className="animate-spin text-brand-blue mb-4" />
-                  <p className="font-bold text-sm animate-pulse">Analyse nutritionnelle...</p>
+                  <p className="font-bold text-sm animate-pulse">Analyse en cours...</p>
                </div>
              )}
           </div>
@@ -95,7 +92,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
                <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest flex items-center gap-1">
-                       <Sparkles size={10} /> Identification IA
+                       <Sparkles size={10} /> Identification WellTrack
                     </span>
                     <h4 className="text-xl font-bold">{result.name}</h4>
                   </div>

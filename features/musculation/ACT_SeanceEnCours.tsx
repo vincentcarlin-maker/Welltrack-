@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { WorkoutProgram, WorkoutBlock, ActivityLog } from '../../types';
-import { ChevronLeft, Play, Pause, CheckCircle2, FastForward, BrainCircuit, Activity, Timer, Plus, SkipForward, Trophy, Flame, Dumbbell, Save } from 'lucide-react';
+import { ChevronLeft, Play, Pause, CheckCircle2, FastForward, Activity, Timer, Plus, SkipForward, Trophy, Flame, Dumbbell, Save, Lightbulb } from 'lucide-react';
 import { getProgressionRecommendation } from './logic/progressionAlgo';
 
 interface Props {
@@ -13,29 +14,24 @@ interface Props {
 export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish, onCancel }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
-  const [isSummary, setIsSummary] = useState(false); // Nouvel état pour l'écran de fin
+  const [isSummary, setIsSummary] = useState(false);
 
-  // Navigation
   const [blockIdx, setBlockIdx] = useState(0);     
   const [exInBlockIdx, setExInBlockIdx] = useState(0); 
   const [currentSet, setCurrentSet] = useState(1); 
   
-  // Timer de Repos
   const [isResting, setIsResting] = useState(false);
   const [restTimer, setRestTimer] = useState(0);
   const [initialRestTime, setInitialRestTime] = useState(0);
   
-  // Données de saisie
   const [currentRpe, setCurrentRpe] = useState<number>(8);
   const [sessionBlocks, setSessionBlocks] = useState<WorkoutBlock[]>(JSON.parse(JSON.stringify(program.blocks)));
 
-  // Etats dérivés
   const currentBlock = sessionBlocks[blockIdx];
   const currentEx = currentBlock.exercises[exInBlockIdx];
   const isSuperset = currentBlock.exercises.length > 1;
   const [coachTip, setCoachTip] = useState<{text: string, action: string} | null>(null);
 
-  // Chronomètres
   useEffect(() => {
     let interval: any;
     if (isRunning && !isSummary) interval = setInterval(() => setElapsedTime(p => p + 1), 1000);
@@ -84,7 +80,7 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
     const isLastSet = currentSet === currentEx.sets;
 
     if (isLastBlock && ((isSuperset && isLastExInBlock && isLastSet) || (!isSuperset && isLastSet))) {
-        setIsSummary(true); // Afficher le résumé au lieu de quitter direct
+        setIsSummary(true);
         setIsRunning(false);
     } else {
         if (currentEx.restSeconds > 0) {
@@ -130,19 +126,18 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
       }
   };
 
-  // --- ECRAN RESUME & ENREGISTREMENT ---
   if (isSummary) {
       const stats = calculateVolume();
-      const calories = Math.ceil(elapsedTime / 60 * 6.5); // Estimation
+      const calories = Math.ceil(elapsedTime / 60 * 6.5);
       
       return (
         <div className="fixed inset-0 z-[100] bg-slate-900 text-white flex flex-col p-6 animate-in slide-in-from-bottom duration-500">
             <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-6 shadow-glow animate-bounce">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mb-6 shadow-glow animate-bounce">
                     <Trophy size={48} className="text-white" />
                 </div>
-                <h2 className="text-3xl font-black mb-2">Séance Terminée !</h2>
-                <p className="text-slate-400 mb-10">Bravo, vous avez complété {program.name}.</p>
+                <h2 className="text-3xl font-black mb-2">Séance Validée !</h2>
+                <p className="text-slate-400 mb-10">Félicitations pour votre entraînement.</p>
 
                 <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
                     <div className="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
@@ -176,19 +171,18 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                     <Save size={20} /> Enregistrer la séance
                 </button>
                 <button onClick={onCancel} className="w-full py-4 text-slate-400 font-bold text-sm">
-                    Ne pas enregistrer
+                    Retour
                 </button>
             </div>
         </div>
       );
   }
 
-  // --- ECRAN REPOS ---
   if (isResting) {
     const progress = ((initialRestTime - restTimer) / initialRestTime) * 100;
     return (
         <div className="fixed inset-0 z-[100] bg-slate-900 flex flex-col items-center justify-center text-white animate-in fade-in duration-300">
-            <h2 className="text-xl font-bold uppercase tracking-widest text-blue-300 mb-8 relative z-10">Récupération</h2>
+            <h2 className="text-xl font-bold uppercase tracking-widest text-blue-300 mb-8 relative z-10">Repos</h2>
             <div className="relative w-64 h-64 flex items-center justify-center mb-12">
                  <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                     <circle cx="128" cy="128" r="120" stroke="#1e293b" strokeWidth="8" fill="none" />
@@ -202,12 +196,10 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                 <button onClick={() => setRestTimer(t => t + 30)} className="bg-slate-800 p-4 rounded-2xl flex items-center gap-2 font-bold border border-white/10"><Plus size={20} /> +30s</button>
                 <button onClick={proceedToNextStep} className="bg-white text-slate-900 p-4 px-8 rounded-2xl flex items-center gap-2 font-bold shadow-lg"><SkipForward size={20} /> Passer</button>
             </div>
-            <div className="absolute bottom-10 text-slate-400 text-sm font-medium animate-pulse">Prochain : {isSuperset && exInBlockIdx < currentBlock.exercises.length - 1 ? sessionBlocks[blockIdx].exercises[exInBlockIdx + 1].name : currentEx.name}</div>
         </div>
     );
   }
 
-  // --- ECRAN PRINCIPAL (Reste inchangé en structure, juste nettoyé) ---
   return (
     <div className="h-[100dvh] bg-slate-900 text-white relative overflow-hidden flex flex-col pb-[env(safe-area-inset-bottom)]">
        <div className="absolute inset-0 z-0">
@@ -216,7 +208,7 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
        </div>
 
        <div className="relative z-10 flex justify-between items-center p-6 pt-8 mt-[env(safe-area-inset-top)]">
-          <button onClick={onCancel} className="flex items-center gap-1 text-slate-300 active:text-white"><ChevronLeft size={20} /> Retour</button>
+          <button onClick={onCancel} className="flex items-center gap-1 text-slate-300 active:text-white"><ChevronLeft size={20} /> Quitter</button>
           <span className="text-slate-400 font-mono text-sm bg-slate-800 px-2 py-1 rounded-md flex items-center gap-2"><Timer size={14} /> {formatTime(elapsedTime)}</span>
        </div>
 
@@ -227,9 +219,9 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
           </div>
 
           {coachTip && (
-             <div className={`mb-4 p-4 rounded-2xl border flex items-start gap-3 shadow-lg ${coachTip.action === 'DELOAD' ? 'bg-red-500/10 border-red-500/30' : 'bg-blue-600/20 border-blue-500/30'}`}>
-                <div className={`p-2 rounded-full ${coachTip.action === 'DELOAD' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}><BrainCircuit size={18} /></div>
-                <div><h4 className={`text-xs font-bold uppercase tracking-wider mb-0.5 ${coachTip.action === 'DELOAD' ? 'text-red-300' : 'text-blue-300'}`}>Coach IA</h4><p className="text-sm font-medium text-white leading-tight">{coachTip.text}</p></div>
+             <div className="mb-4 p-4 rounded-2xl border bg-blue-600/20 border-blue-500/30 flex items-start gap-3 shadow-lg">
+                <div className="p-2 rounded-full bg-blue-500/20 text-blue-400"><Lightbulb size={18} /></div>
+                <div><h4 className="text-xs font-bold uppercase tracking-wider mb-0.5 text-blue-300">Conseil WellTrack</h4><p className="text-sm font-medium text-white leading-tight">{coachTip.text}</p></div>
              </div>
           )}
 
@@ -238,11 +230,7 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
                         <h3 className="text-2xl font-bold leading-tight">{currentEx.name}</h3>
-                        <p className="text-slate-400 text-xs mt-1">{isSuperset ? `Exercice ${exInBlockIdx + 1} / ${currentBlock.exercises.length}` : 'Série Simple'}</p>
-                    </div>
-                    <div className="text-right">
-                        <span className="text-slate-400 font-mono text-xs block uppercase">Bloc</span>
-                        <span className="text-lg font-bold">{blockIdx + 1}/{program.blocks.length}</span>
+                        <p className="text-slate-400 text-xs mt-1">{isSuperset ? `Exercice ${exInBlockIdx + 1}` : 'Série Simple'}</p>
                     </div>
                 </div>
                 <div className="w-full bg-white/10 h-1.5 rounded-full mb-6 overflow-hidden">
@@ -252,7 +240,6 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                     <div className="bg-slate-800/50 p-3 rounded-2xl text-center border border-white/5"><span className="text-xl font-bold block text-white">{currentEx.weight}</span><span className="text-[10px] text-slate-400 uppercase font-bold">Kg</span></div>
                     <div className="bg-slate-800/50 p-3 rounded-2xl text-center border border-white/5"><span className="text-xl font-bold block text-white">{currentEx.reps}</span><span className="text-[10px] text-slate-400 uppercase font-bold">Reps</span></div>
                     <div className="bg-brand-blue p-3 rounded-2xl text-center shadow-glow border border-white/10 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
                         <span className="text-xl font-bold block text-white relative z-10">{currentSet} <span className="text-sm opacity-60">/ {currentEx.sets}</span></span>
                         <span className="text-[10px] text-blue-100 uppercase font-bold relative z-10">Série</span>
                     </div>
@@ -262,15 +249,14 @@ export const ACT_SeanceEnCours: React.FC<Props> = ({ program, history, onFinish,
                 <div className="mb-4">
                    <div className="flex justify-between items-center mb-2">
                       <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1"><Activity size={12}/> Intensité (RPE)</span>
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded ${currentRpe >= 9 ? 'bg-red-500/20 text-red-400' : currentRpe >= 7 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-green-500/20 text-green-400'}`}>{currentRpe}/10</span>
+                      <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{currentRpe}/10</span>
                    </div>
                    <input type="range" min="1" max="10" step="0.5" value={currentRpe} onChange={(e) => setCurrentRpe(parseFloat(e.target.value))} className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-blue" />
-                   <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-bold uppercase"><span>Facile</span><span>Moyen</span><span>Échec</span></div>
                 </div>
                 <div className="flex gap-3">
                    <button onClick={() => setIsRunning(!isRunning)} className="bg-slate-800 hover:bg-slate-700 text-white w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 flex-shrink-0">{isRunning ? <Pause size={20} fill="white"/> : <Play size={20} fill="white" />}</button>
                    <button onClick={handleValidateSet} className="flex-1 bg-white text-slate-900 rounded-2xl font-bold text-base shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
-                       {currentSet < currentEx.sets || (isSuperset && exInBlockIdx < currentBlock.exercises.length - 1) ? <span>Valider <FastForward size={16} className="inline ml-1"/></span> : <span>Terminer Exo <CheckCircle2 size={16} className="inline ml-1"/></span>}
+                       <span>Valider la série <FastForward size={16} className="inline ml-1"/></span>
                    </button>
                 </div>
              </div>
