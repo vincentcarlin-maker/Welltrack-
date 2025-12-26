@@ -4,7 +4,7 @@ import { ViewState } from '../types';
 import { Home, Activity, Utensils, Trophy, User } from 'lucide-react';
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: React.Node;
   activeView: ViewState;
   onChangeView: (view: ViewState) => void;
 }
@@ -22,53 +22,52 @@ const NavItem: React.FC<{
     <div className={`transition-all duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
       {icon}
     </div>
-    <span className={`text-[8px] mt-1 font-black uppercase tracking-widest transition-opacity ${isActive ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
+    <span className={`text-[9px] mt-1 font-black uppercase tracking-widest transition-opacity ${isActive ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
   </button>
 );
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onChangeView }) => {
   return (
     <div className="flex flex-col h-full w-full bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
-      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth-mobile w-full no-scrollbar relative">
+      {/* Contenu principal scrollable */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth w-full no-scrollbar relative pb-20">
         {children}
       </main>
 
-      {/* Barre de navigation fixée tout en bas avec fond plein */}
-      <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-slate-100 shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
-        <div className="flex justify-around items-center w-full max-w-lg mx-auto h-[64px] px-2">
+      {/* Barre de navigation fixée strictement en bas */}
+      <nav className="fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+        <div className="flex justify-around items-center w-full max-w-lg mx-auto h-[70px] px-2 pb-[env(safe-area-inset-bottom)]">
           <NavItem 
-            icon={<Home size={22} strokeWidth={activeView === ViewState.HOME ? 2.5 : 2} />} 
+            icon={<Home size={24} strokeWidth={activeView === ViewState.HOME ? 2.5 : 2} />} 
             label="Accueil" 
             isActive={activeView === ViewState.HOME} 
             onClick={() => onChangeView(ViewState.HOME)} 
           />
           <NavItem 
-            icon={<Activity size={22} strokeWidth={activeView === ViewState.ACTIVITY ? 2.5 : 2} />} 
+            icon={<Activity size={24} strokeWidth={activeView === ViewState.ACTIVITY ? 2.5 : 2} />} 
             label="Fit" 
             isActive={activeView === ViewState.ACTIVITY} 
             onClick={() => onChangeView(ViewState.ACTIVITY)} 
           />
           <NavItem 
-            icon={<Utensils size={22} strokeWidth={activeView === ViewState.NUTRITION ? 2.5 : 2} />} 
+            icon={<Utensils size={24} strokeWidth={activeView === ViewState.NUTRITION ? 2.5 : 2} />} 
             label="Manger" 
             isActive={activeView === ViewState.NUTRITION} 
             onClick={() => onChangeView(ViewState.NUTRITION)} 
           />
           <NavItem 
-            icon={<Trophy size={22} strokeWidth={activeView === ViewState.GAMIFICATION ? 2.5 : 2} />} 
+            icon={<Trophy size={24} strokeWidth={activeView === ViewState.GAMIFICATION ? 2.5 : 2} />} 
             label="Défis" 
             isActive={activeView === ViewState.GAMIFICATION} 
             onClick={() => onChangeView(ViewState.GAMIFICATION)} 
           />
           <NavItem 
-            icon={<User size={22} strokeWidth={activeView === ViewState.PROFILE ? 2.5 : 2} />} 
+            icon={<User size={24} strokeWidth={activeView === ViewState.PROFILE ? 2.5 : 2} />} 
             label="Profil" 
             isActive={activeView === ViewState.PROFILE} 
             onClick={() => onChangeView(ViewState.PROFILE)} 
           />
         </div>
-        {/* Espaceur pour l'indicateur d'accueil iOS */}
-        <div className="h-[env(safe-area-inset-bottom)] bg-white w-full"></div>
       </nav>
     </div>
   );
