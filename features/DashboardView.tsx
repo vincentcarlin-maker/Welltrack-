@@ -47,7 +47,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   const stepProgress = Math.min((stats.dailySteps / 10000) * 100, 100);
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen pb-48 relative overflow-x-hidden">
+    <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
       
       {/* Header Premium */}
       <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[26rem] rounded-b-[5rem] relative pt-[calc(3rem+env(safe-area-inset-top))] px-8 text-white shadow-2xl">
@@ -161,7 +161,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
         </div>
       </div>
 
-      {/* Grille d'actions - Sommeil remplacé par Journal pour garder la structure 2x2 */}
+      {/* Grille d'actions */}
       <div className="px-8 mt-14">
         <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Santé</h3>
         <div className="grid grid-cols-2 gap-8">
