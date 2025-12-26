@@ -1,0 +1,63 @@
+
+import React, { useState } from 'react';
+import { Layout } from './components/Layout';
+import { DashboardView } from './features/DashboardView';
+import { ActivityView } from './features/ActivityView';
+import { NutritionView } from './features/NutritionView';
+import { SleepView } from './features/SleepView';
+import { GamificationView } from './features/GamificationView';
+import { ProfileView } from './features/ProfileView';
+import { COM_Complements } from './features/complements/COM_Complements';
+import { useAppData } from './hooks/useAppData';
+import { ViewState } from './types';
+
+const PlaceholderView = ({ title }: { title: string }) => (
+  <div className="flex flex-col items-center justify-center h-full text-slate-500 p-6 text-center">
+    <div className="bg-slate-100 p-4 rounded-full mb-4">
+      <span className="text-4xl grayscale">🚧</span>
+    </div>
+    <h2 className="text-xl font-bold text-slate-800 mb-2">{title}</h2>
+    <p className="text-sm text-slate-400">Ce module sera disponible dans la prochaine mise à jour.</p>
+  </div>
+);
+
+export default function App() {
+  const [activeView, setActiveView] = useState<ViewState>(ViewState.HOME);
+  const { user, stats, activities, meals, sleepHistory, supplements, actions } = useAppData();
+
+  const renderContent = () => {
+    switch (activeView) {
+      case ViewState.HOME:
+        return <DashboardView 
+            user={user} 
+            stats={stats} 
+            onChangeView={setActiveView} 
+            onSyncHealth={actions.syncHealthData}
+        />;
+      case ViewState.ACTIVITY:
+        return <ActivityView activities={activities} dailySteps={stats.dailySteps} addActivity={actions.addActivity} />;
+      case ViewState.SLEEP:
+        return <SleepView sleepHistory={sleepHistory} />;
+      case ViewState.NUTRITION:
+        return <NutritionView meals={meals} dailyCalories={stats.dailyCalories} addMeal={actions.addMeal} />;
+      case ViewState.SUPPLEMENTS:
+        return <COM_Complements supplements={supplements} onToggle={actions.toggleSupplement} onBack={() => setActiveView(ViewState.HOME)} />;
+      case ViewState.GAMIFICATION:
+        return <GamificationView user={user} />;
+      case ViewState.PROFILE:
+        return <ProfileView user={user} onUpdate={actions.updateUser} />;
+      case ViewState.JOURNAL:
+        return <PlaceholderView title="Journal de Santé" />;
+      case ViewState.RECOMMENDATIONS:
+        return <PlaceholderView title="Recommandations IA" />;
+      default:
+        return <DashboardView user={user} stats={stats} onChangeView={setActiveView} onSyncHealth={actions.syncHealthData} />;
+    }
+  };
+
+  return (
+    <Layout activeView={activeView} onChangeView={setActiveView}>
+      {renderContent()}
+    </Layout>
+  );
+}

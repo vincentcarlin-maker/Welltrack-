@@ -1,0 +1,5 @@
+{
+  "name": "WellTrack",
+  "description": "Une application de suivi de santé holistique alimentée par l'IA pour l'activité, la nutrition, le sommeil et le bien-être.",
+  "requestFramePermissions": []
+}
