@@ -1,6 +1,6 @@
 {
-  "name": "WellTrack",
-  "description": "Suivi de santé holistique avec IA : Musculation, Nutrition, Sommeil et Gamification.",
+  "name": "Fitrack",
+  "description": "L'écosystème ultime de suivi de performance : Musculation, Nutrition et Récupération pilotés par l'IA.",
   "requestFramePermissions": [
     "camera"
   ]

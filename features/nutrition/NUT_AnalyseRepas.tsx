@@ -23,7 +23,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
     reader.onloadend = async () => {
       setPreviewUrl(reader.result as string);
       setLoading(true);
-      // Simulation locale du temps de traitement
+      // Simulation Fitrack
       setTimeout(async () => {
         const analysis = await analyzeMealImage("");
         setResult(analysis);
@@ -52,24 +52,24 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
     <div className="bg-slate-900 min-h-screen text-white pb-24 pt-6 px-6 flex flex-col animate-in fade-in">
       <header className="flex items-center gap-4 mb-8">
         <button onClick={onCancel} className="p-2 -ml-2 text-white/70"><ChevronLeft size={24} /></button>
-        <h2 className="text-xl font-bold">Analyse WellTrack</h2>
+        <h2 className="text-xl font-bold uppercase tracking-tighter">Scan Fitrack</h2>
       </header>
 
       {!previewUrl && (
         <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8">
           <div className="w-32 h-32 bg-white/5 rounded-full flex items-center justify-center border border-white/10 relative">
              <div className="absolute inset-0 bg-brand-blue/20 blur-2xl rounded-full"></div>
-             <Camera size={48} className="text-brand-blue relative z-10" />
+             <Camera size={48} className="text-brand-accent relative z-10" />
           </div>
           <div>
-            <h3 className="text-2xl font-black mb-2">Analysez votre plat</h3>
-            <p className="text-slate-400 text-sm max-w-[250px]">WellTrack identifiera les ingrédients et estimera les calories localement.</p>
+            <h3 className="text-2xl font-[900] mb-2 uppercase tracking-tighter">Analyse Nutrition</h3>
+            <p className="text-slate-400 text-sm max-w-[250px]">Prenez votre plat en photo pour une identification instantanée par Fitrack.</p>
           </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform flex items-center gap-2"
+            className="bg-brand-blue text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-transform flex items-center gap-2"
           >
-            <ImageIcon size={20} /> Choisir une photo
+            <ImageIcon size={20} /> Sélectionner Photo
           </button>
           <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
         </div>
@@ -81,8 +81,8 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              <img src={previewUrl} className="w-full h-full object-cover" alt="Preview" />
              {loading && (
                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
-                  <Loader2 size={48} className="animate-spin text-brand-blue mb-4" />
-                  <p className="font-bold text-sm animate-pulse">Analyse en cours...</p>
+                  <Loader2 size={48} className="animate-spin text-brand-accent mb-4" />
+                  <p className="font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Fitrack Scanning...</p>
                </div>
              )}
           </div>
@@ -91,13 +91,13 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
             <div className="bg-white/10 backdrop-blur-xl rounded-[2rem] p-6 border border-white/10 animate-in slide-in-from-bottom">
                <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest flex items-center gap-1">
-                       <Sparkles size={10} /> Identification WellTrack
+                    <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest flex items-center gap-1">
+                       <Sparkles size={10} /> Fitrack Smart Data
                     </span>
                     <h4 className="text-xl font-bold">{result.name}</h4>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-black text-white">{result.calories}</span>
+                    <span className="text-2xl font-[900] text-white">{result.calories}</span>
                     <span className="text-[10px] block font-bold text-slate-400 uppercase">kcal</span>
                   </div>
                </div>
@@ -118,11 +118,11 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
                </div>
 
                <div className="flex gap-3">
-                  <button onClick={() => {setPreviewUrl(null); setResult(null);}} className="flex-1 bg-white/10 py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                     <X size={18} /> Annuler
+                  <button onClick={() => {setPreviewUrl(null); setResult(null);}} className="flex-1 bg-white/10 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                     <X size={18} /> Refuser
                   </button>
-                  <button onClick={handleConfirm} className="flex-[2] bg-brand-blue py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
-                     <Check size={18} /> Valider le repas
+                  <button onClick={handleConfirm} className="flex-[2] bg-brand-blue py-4 rounded-xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+                     <Check size={18} /> Enregistrer
                   </button>
                </div>
             </div>

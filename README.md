@@ -1,43 +1,19 @@
-# WellTrack 🏋️‍♂️🥗💤
 
-WellTrack est une application mobile de suivi de santé holistique alimentée par l'intelligence artificielle (Gemini). Elle permet de suivre l'activité physique, la nutrition, le sommeil et propose des défis gamifiés.
+# Fitrack 🏋️‍♂️🥗⚡
 
-## Fonctionnalités
+Fitrack est l'écosystème ultime de suivi de performance athlétique. Pensé pour les athlètes exigeants, Fitrack combine musculation de haute précision, nutrition optimisée et récupération pilotée par les données.
 
-*   **Tableau de bord** : Vue d'ensemble des statistiques journalières.
-*   **Musculation** : Création de programmes, suivi de séances, générateur de programmes par IA.
-*   **Nutrition** : Suivi des calories et macronutriments (analyse photo IA à venir).
-*   **Sommeil** : Analyse de la qualité du sommeil.
-*   **Gamification** : Système de niveaux, badges et défis.
+## Fonctionnalités Clés
 
-## Installation
-
-1.  Cloner le dépôt :
-    ```bash
-    git clone https://github.com/VOTRE_NOM_UTILISATEUR/WellTrack.git
-    cd WellTrack
-    ```
-
-2.  Installer les dépendances :
-    ```bash
-    npm install
-    ```
-
-3.  Configurer la clé API :
-    *   Créez un fichier `.env` à la racine.
-    *   Ajoutez votre clé Gemini : `API_KEY=votre_cle_api_ici`
-
-4.  Lancer le projet :
-    ```bash
-    npm run dev
-    ```
+*   **Fit Dashboard** : Visualisez vos pas, calories et séries de victoires avec une interface haute performance.
+*   **Muscu Pro** : Tracking avancé des séances avec calcul du volume (tonnage) et RPE.
+*   **Coach Fitrack** : Recommandations quotidiennes basées sur vos statistiques réelles.
+*   **Scan Nutrition** : Analyse visuelle des repas pour un suivi sans friction.
+*   **Récupération** : Cartographie musculaire intelligente indiquant votre état de fatigue.
 
 ## Technologies
 
-*   React 19
-*   TypeScript
-*   Tailwind CSS
-*   Google Gemini API (@google/genai)
-*   Recharts
-*   Lucide React
-*   Vite
+*   React 19 / Vite
+*   Tailwind CSS (Elite Style)
+*   Lucide Icons
+*   Recharts (Performance Tracking)

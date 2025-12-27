@@ -3,18 +3,18 @@ import { useState, useEffect } from 'react';
 import { UserProfile, ActivityLog, Meal, SleepLog, Supplement, JournalEntry, WorkoutProgram } from '../types';
 
 const STORAGE_KEYS = {
-  USER: 'welltrack_user',
-  ACTIVITIES: 'welltrack_activities',
-  PROGRAMS: 'welltrack_programs',
-  MEALS: 'welltrack_meals',
-  SLEEP: 'welltrack_sleep',
-  SUPPLEMENTS: 'welltrack_supplements',
-  JOURNAL: 'welltrack_journal',
-  STEPS: 'welltrack_steps'
+  USER: 'fitrack_user',
+  ACTIVITIES: 'fitrack_activities',
+  PROGRAMS: 'fitrack_programs',
+  MEALS: 'fitrack_meals',
+  SLEEP: 'fitrack_sleep',
+  SUPPLEMENTS: 'fitrack_supplements',
+  JOURNAL: 'fitrack_journal',
+  STEPS: 'fitrack_steps'
 };
 
 const DEFAULT_USER: UserProfile = {
-  name: "Nouvel Utilisateur",
+  name: "Athlète",
   age: 25,
   weight: 70,
   height: 175,

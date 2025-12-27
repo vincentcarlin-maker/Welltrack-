@@ -53,8 +53,8 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
     <div className="space-y-8 pb-32 bg-slate-50 min-h-screen pt-4 px-6 animate-in fade-in duration-500">
       <header className="flex justify-between items-start pt-[env(safe-area-inset-top)]">
         <div>
-           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Musculation</h1>
-           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Performance & Force</p>
+           <h1 className="text-3xl font-[900] text-slate-900 tracking-tighter uppercase">Musculation</h1>
+           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fitrack Performance</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setCurrentView('CALENDAR')} className="w-12 h-12 bg-white rounded-2xl shadow-pro border border-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-all">
@@ -70,18 +70,18 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
       <section className="animate-in slide-in-from-bottom duration-700">
         <div className="flex justify-between items-end mb-4 px-2">
           <div>
-            <h3 className="font-black text-slate-900 text-lg tracking-tight">Récupération</h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">État de vos fibres</p>
+            <h3 className="font-[900] text-slate-900 text-lg tracking-tight uppercase">Récupération</h3>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fitrack Scan</p>
           </div>
           <div className="text-right">
-            <span className={`text-2xl font-black ${readiness > 70 ? 'text-emerald-500' : 'text-amber-500'}`}>{readiness}%</span>
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Disponibilité</p>
+            <span className={`text-2xl font-[900] ${readiness > 70 ? 'text-emerald-500' : 'text-amber-500'}`}>{readiness}%</span>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Dispo</p>
           </div>
         </div>
         <RecoveryMuscleMap activities={localActivities} />
       </section>
 
-      {/* Suggestion Coach */}
+      {/* Suggestion Coach Fitrack */}
       <div className="bg-slate-900 rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden group active:scale-98 transition-all cursor-pointer" onClick={() => programs[0] && handleStartSession(programs[0])}>
          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl"></div>
          <div className="flex items-center gap-4 relative z-10">
@@ -89,9 +89,9 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
                 <BrainCircuit size={24} className="text-white" />
             </div>
             <div className="flex-1">
-               <h4 className="font-black text-sm uppercase tracking-widest text-blue-300">Coach WellTrack</h4>
+               <h4 className="font-black text-sm uppercase tracking-widest text-brand-accent">Coach Fitrack</h4>
                <p className="text-lg font-bold leading-tight">
-                {readiness > 70 ? "Excellente forme. C'est le moment d'un PR !" : "Récupération partielle. Focus technique ?"}
+                {readiness > 70 ? "Prêt pour une nouvelle performance ?" : "Focus sur la technique aujourd'hui."}
                </p>
             </div>
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -109,8 +109,8 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
       {/* Liste des programmes */}
       <div>
         <div className="flex justify-between items-center mb-6 px-2">
-            <h3 className="font-black text-slate-900 text-xl tracking-tighter">Mes Programmes</h3>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{programs.length} Séries</span>
+            <h3 className="font-[900] text-slate-900 text-xl tracking-tighter uppercase">Mes Séances</h3>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{programs.length} Packs</span>
         </div>
         <div className="grid grid-cols-1 gap-5">
             {programs.map(prog => (
@@ -119,7 +119,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
                        <img src={prog.imageUrl || 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=80'} className="w-full h-full object-cover" alt="Prog" />
                     </div>
                     <div className="flex-1">
-                        <h4 className="font-black text-slate-900 text-lg tracking-tight leading-none mb-1">{prog.name}</h4>
+                        <h4 className="font-[900] text-slate-900 text-lg tracking-tight leading-none mb-1 uppercase">{prog.name}</h4>
                         <div className="flex gap-2 items-center">
                            <span className="bg-blue-50 text-brand-blue text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">{prog.programType}</span>
                            <p className="text-slate-400 text-[10px] font-bold">

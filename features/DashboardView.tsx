@@ -20,12 +20,12 @@ const NavButton = ({ label, icon, color, onClick, delay }: { label: string, icon
     <div className={`p-4 rounded-3xl ${color} text-white shadow-lg`}>
       {React.cloneElement(icon as React.ReactElement<{ size?: number }>, { size: 30 })}
     </div>
-    <span className="text-xs font-black text-slate-800 uppercase tracking-tighter">{label}</span>
+    <span className="text-xs font-[900] text-slate-800 uppercase tracking-tighter">{label}</span>
   </button>
 );
 
 export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeView, onSyncHealth }) => {
-  const [localTip, setLocalTip] = useState<string>("Analyse de vos données...");
+  const [localTip, setLocalTip] = useState<string>("Analyse Fitrack en cours...");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
 
@@ -50,16 +50,16 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
       
-      {/* Header Premium */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF] h-[28rem] rounded-b-[5rem] relative px-8 text-white shadow-2xl transition-all duration-500">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
+      {/* Header Premium Fitrack */}
+      <div className="bg-gradient-to-br from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] h-[28rem] rounded-b-[5rem] relative px-8 text-white shadow-2xl transition-all duration-500">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-accent/20 rounded-full blur-[100px] -mr-32 -mt-32"></div>
         <div className="h-[calc(env(safe-area-inset-top)+2rem)] w-full"></div>
 
         <div className="flex justify-between items-start relative z-10">
           <div>
             <WellTrackLogo variant="white" size={44} />
             <div className="flex items-center gap-2 mt-2 px-1">
-               <span className="text-blue-100/60 text-[10px] font-black uppercase tracking-[0.2em]">Athlete Pro Edition</span>
+               <span className="text-blue-100/60 text-[10px] font-black uppercase tracking-[0.2em]">Fitrack Elite v1.0</span>
             </div>
           </div>
           
@@ -86,15 +86,15 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
 
         <div className="mt-10 bg-white/10 backdrop-blur-md rounded-[3rem] p-6 border border-white/15 flex justify-between items-center relative z-10 shadow-xl">
            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 bg-gradient-to-tr from-yellow-300 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3">
+              <div className="w-14 h-14 bg-gradient-to-tr from-brand-accent to-brand-blue rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3">
                  <Zap className="text-white" size={28} />
               </div>
               <div>
-                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Série de Victoires</p>
-                 <p className="text-3xl font-black">{user.level + 10} Jours</p>
+                 <p className="text-[10px] font-black uppercase text-blue-100 tracking-[0.2em]">Progression Totale</p>
+                 <p className="text-3xl font-[900]">{user.level + 10} Jours</p>
               </div>
            </div>
-           <Award className="text-yellow-400 opacity-40 animate-pulse" size={48} />
+           <Award className="text-brand-accent opacity-40 animate-pulse" size={48} />
         </div>
       </div>
 
@@ -105,9 +105,9 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                 <div className="p-2.5 bg-blue-50 rounded-2xl">
                   <TrendingUp size={20} className="text-brand-blue" />
                 </div>
-                <span className="text-sm font-black text-slate-800 uppercase tracking-[0.15em]">Pas Quotidiens</span>
+                <span className="text-sm font-[900] text-slate-800 uppercase tracking-[0.15em]">Pas Fitrack</span>
               </div>
-              <span className="text-[10px] font-black text-green-500 bg-green-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-green-500/20">Optimal</span>
+              <span className="text-[10px] font-black text-brand-accent bg-brand-accent/10 px-4 py-2 rounded-full uppercase tracking-widest border border-brand-accent/20">Elite</span>
            </div>
 
            <div className="flex flex-col items-center gap-12">
@@ -123,7 +123,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                     />
                  </svg>
                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{stats.dailySteps.toLocaleString()}</span>
+                    <span className="text-4xl font-[900] text-slate-900 tracking-tighter">{stats.dailySteps.toLocaleString()}</span>
                     <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Objectif 10k</span>
                  </div>
               </div>
@@ -133,43 +133,43 @@ export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeV
                     <div className="flex justify-between items-end mb-3">
                       <div>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Calories Consommées</span>
-                        <span className="text-4xl font-black text-slate-900 tracking-tighter">{stats.dailyCalories} <span className="text-sm text-slate-400 font-bold">kcal</span></span>
+                        <span className="text-4xl font-[900] text-slate-900 tracking-tighter">{stats.dailyCalories} <span className="text-sm text-slate-400 font-bold">kcal</span></span>
                       </div>
                     </div>
                     <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 shadow-inner">
-                       <div className="bg-gradient-to-r from-orange-400 to-red-500 h-full rounded-full shadow-lg transition-all duration-1000 ease-out" style={{ width: `${Math.min((stats.dailyCalories / 2500) * 100, 100)}%` }}></div>
+                       <div className="bg-gradient-to-r from-brand-accent to-brand-blue h-full rounded-full shadow-lg transition-all duration-1000 ease-out" style={{ width: `${Math.min((stats.dailyCalories / 2500) * 100, 100)}%` }}></div>
                     </div>
                  </div>
                  <button onClick={() => onChangeView(ViewState.ACTIVITY)} className="w-full bg-slate-900 text-white py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
-                   Analyse Détaillée
+                   Dashboard Fitrack
                  </button>
               </div>
            </div>
         </div>
       </div>
 
-      {/* Conseil IA */}
+      {/* Conseil Coach Fitrack */}
       <div className="px-8 mt-12">
         <div className="bg-white p-7 rounded-[3rem] border border-slate-100 shadow-pro flex items-center gap-6 group cursor-pointer active:scale-98 transition-all" onClick={() => onChangeView(ViewState.RECOMMENDATIONS)}>
-           <div className="bg-gradient-to-br from-indigo-500 to-blue-700 p-5 rounded-[2rem] text-white shadow-pro group-hover:rotate-6 transition-transform">
+           <div className="bg-gradient-to-br from-brand-blue to-brand-accent p-5 rounded-[2rem] text-white shadow-pro group-hover:rotate-6 transition-transform">
               <Activity size={28} />
            </div>
            <div className="flex-1">
-              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">Coach Virtuel</h4>
+              <h4 className="font-black text-[10px] text-brand-blue uppercase tracking-[0.25em] mb-2">Coach Fitrack</h4>
               <p className="text-sm text-slate-800 font-bold leading-tight italic">"{localTip}"</p>
            </div>
            <ChevronRight className="text-slate-300 group-hover:translate-x-1 transition-transform" size={24} />
         </div>
       </div>
 
-      {/* Grille d'actions réorganisée */}
+      {/* Grille d'actions Fitrack */}
       <div className="px-8 mt-14">
-        <h3 className="font-black text-slate-900 text-2xl tracking-tighter mb-8">Votre Écosystème</h3>
+        <h3 className="font-[900] text-slate-900 text-2xl tracking-tighter mb-8">Écosystème Fitrack</h3>
         <div className="grid grid-cols-2 gap-8">
-          <NavButton label="Fitness" icon={<Activity />} color="bg-orange-500" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
-          <NavButton label="Nutrition" icon={<Utensils />} color="bg-green-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
-          <NavButton label="Journal" icon={<NotebookText />} color="bg-indigo-600" onClick={() => onChangeView(ViewState.JOURNAL)} delay="delay-150" />
-          <NavButton label="Calendrier" icon={<Calendar />} color="bg-blue-600" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-200" />
+          <NavButton label="Fit" icon={<Activity />} color="bg-brand-blue" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-0" />
+          <NavButton label="Food" icon={<Utensils />} color="bg-emerald-500" onClick={() => onChangeView(ViewState.NUTRITION)} delay="delay-75" />
+          <NavButton label="Notes" icon={<NotebookText />} color="bg-indigo-600" onClick={() => onChangeView(ViewState.JOURNAL)} delay="delay-150" />
+          <NavButton label="Agenda" icon={<Calendar />} color="bg-slate-800" onClick={() => onChangeView(ViewState.ACTIVITY)} delay="delay-200" />
         </div>
       </div>
     </div>
