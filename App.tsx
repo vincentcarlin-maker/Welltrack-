@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Layout } from './components/Layout';
 import { DashboardView } from './features/DashboardView';
 import { ActivityView } from './features/ActivityView';
+import { SleepView } from './features/SleepView';
 import { NutritionView } from './features/NutritionView';
 import { GamificationView } from './features/GamificationView';
 import { ProfileView } from './features/ProfileView';
@@ -14,19 +15,16 @@ import { ViewState } from './types';
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewState>(ViewState.HOME);
-  const { user, stats, activities, meals, supplements, actions } = useAppData();
+  const { user, stats, activities, meals, supplements, sleepHistory, actions } = useAppData();
 
   const renderContent = () => {
     switch (activeView) {
       case ViewState.HOME:
-        return <DashboardView 
-            user={user} 
-            stats={stats} 
-            onChangeView={setActiveView} 
-            onSyncHealth={actions.syncHealthData}
-        />;
+        return <DashboardView user={user} stats={stats} onChangeView={setActiveView} onSyncHealth={actions.syncHealthData} />;
       case ViewState.ACTIVITY:
         return <ActivityView activities={activities} dailySteps={stats.dailySteps} addActivity={actions.addActivity} />;
+      case ViewState.SLEEP:
+        return <SleepView sleepHistory={sleepHistory} onBack={() => setActiveView(ViewState.HOME)} />;
       case ViewState.NUTRITION:
         return <NutritionView meals={meals} dailyCalories={stats.dailyCalories} addMeal={actions.addMeal} />;
       case ViewState.SUPPLEMENTS:

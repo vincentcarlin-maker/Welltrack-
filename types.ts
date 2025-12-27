@@ -2,6 +2,7 @@
 export enum ViewState {
   HOME = 'HOME',
   ACTIVITY = 'ACTIVITY',
+  SLEEP = 'SLEEP',
   NUTRITION = 'NUTRITION',
   SUPPLEMENTS = 'SUPPLEMENTS',
   JOURNAL = 'JOURNAL',
@@ -29,7 +30,7 @@ export interface ExerciseDetail {
   weight: number;
   restSeconds: number;
   rpe?: number; // Rate of Perceived Exertion (1-10)
-  durationSeconds?: number; // Nouveau: Temps passé sur l'exercice
+  durationSeconds?: number;
 }
 
 export interface WorkoutBlock {
