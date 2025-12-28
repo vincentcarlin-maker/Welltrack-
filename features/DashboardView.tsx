@@ -4,6 +4,8 @@ import { ViewState, UserProfile } from '../types';
 import { Activity, Utensils, Zap, ChevronRight, Droplets, Trophy, RotateCw, Moon, NotebookText, BrainCircuit } from 'lucide-react';
 import { getDailyRecommendations } from '../services/geminiService';
 import { WellTrackLogo } from '../components/WellTrackLogo';
+import { HealthPermissionGate } from '../components/HealthPermissionGate';
+import { HealthSyncController } from '../services/health/HealthSyncController';
 
 interface DashboardProps {
   user: UserProfile;
@@ -27,21 +29,40 @@ const NavButton = ({ label, icon, color, onClick, delay }: { label: string, icon
 export const DashboardView: React.FC<DashboardProps> = ({ user, stats, onChangeView, onSyncHealth }) => {
   const [localTip, setLocalTip] = useState<string>("Analyse en cours...");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showPermission, setShowPermission] = useState(false);
 
   useEffect(() => {
     getDailyRecommendations("").then(res => setLocalTip(res));
   }, []);
 
   const handleRefresh = async () => {
+    const connected = await HealthSyncController.isConnected();
+    if (!connected) {
+      setShowPermission(true);
+    } else {
+      triggerSync();
+    }
+  };
+
+  const triggerSync = async () => {
     setIsRefreshing(true);
     await onSyncHealth();
     setIsRefreshing(false);
+    setShowPermission(false);
   };
 
   const hydrationProgress = Math.min((stats.hydration / user.hydrationGoal) * 100, 100);
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-32 relative overflow-x-hidden">
+      {showPermission && (
+        <HealthPermissionGate 
+          type="steps" 
+          onAllow={triggerSync} 
+          onDeny={() => setShowPermission(false)} 
+        />
+      )}
+
       {/* Top Section */}
       <div className="bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] h-[24rem] rounded-b-[4rem] relative px-8 text-white shadow-2xl overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
