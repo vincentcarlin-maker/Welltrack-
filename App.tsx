@@ -10,6 +10,7 @@ import { ProfileView } from './features/ProfileView';
 import { COM_Complements } from './features/complements/COM_Complements';
 import { JOU_Journal } from './features/journal/JOU_Journal';
 import { REC_Recommandations } from './features/recommendations/REC_Recommandations';
+import { CoachChatView } from './features/coach/CoachChatView';
 import { useAppData } from './hooks/useAppData';
 import { ViewState } from './types';
 
@@ -37,6 +38,8 @@ export default function App() {
         return <JOU_Journal onSave={(entry) => { actions.addJournalEntry(entry); setActiveView(ViewState.HOME); }} onCancel={() => setActiveView(ViewState.HOME)} />;
       case ViewState.RECOMMENDATIONS:
         return <REC_Recommandations stats={stats} onBack={() => setActiveView(ViewState.HOME)} />;
+      case ViewState.COACH:
+        return <CoachChatView user={user} activities={activities} stats={stats} onBack={() => setActiveView(ViewState.HOME)} />;
       default:
         return <DashboardView user={user} stats={stats} onChangeView={setActiveView} onSyncHealth={actions.syncHealthData} />;
     }

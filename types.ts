@@ -8,19 +8,21 @@ export enum ViewState {
   JOURNAL = 'JOURNAL',
   GAMIFICATION = 'GAMIFICATION',
   RECOMMENDATIONS = 'RECOMMENDATIONS',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
+  COACH = 'COACH'
 }
 
 export interface UserProfile {
   name: string;
   age: number;
-  weight: number; // kg
-  height: number; // cm
+  weight: number; 
+  height: number; 
   gender: 'M' | 'F';
   points: number;
   level: number;
   badges: string[];
   availableEquipment: string[];
+  hydrationGoal: number; // in ml
 }
 
 export interface ExerciseDetail {
@@ -29,8 +31,9 @@ export interface ExerciseDetail {
   reps: number;
   weight: number;
   restSeconds: number;
-  rpe?: number; // Rate of Perceived Exertion (1-10)
+  rpe?: number; 
   durationSeconds?: number;
+  isCompleted?: boolean;
 }
 
 export interface WorkoutBlock {
@@ -77,7 +80,7 @@ export interface Meal {
 export interface SleepLog {
   date: string;
   durationHours: number;
-  qualityScore: number; // 0-100
+  qualityScore: number; 
   deepSleepMinutes: number;
 }
 
@@ -91,12 +94,21 @@ export interface Supplement {
 export interface JournalEntry {
   id: string;
   date: string;
-  mood: number; // 1-5
-  energy: number; // 1-5
+  mood: number; 
+  energy: number; 
   notes: string;
 }
 
-export interface AIAnalysisResult {
+export interface ProgressionRecommendation {
   text: string;
-  structuredData?: any;
+  action: 'INCREASE_LOAD' | 'INCREASE_REPS' | 'INCREASE_SETS' | 'DELOAD' | 'MAINTAIN';
+  explanation: string;
+  suggestedValue?: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: number;
 }

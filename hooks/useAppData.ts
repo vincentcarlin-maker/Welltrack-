@@ -3,26 +3,28 @@ import { useState, useEffect } from 'react';
 import { UserProfile, ActivityLog, Meal, SleepLog, Supplement, JournalEntry, WorkoutProgram } from '../types';
 
 const STORAGE_KEYS = {
-  USER: 'fitrack_user',
-  ACTIVITIES: 'fitrack_activities',
-  PROGRAMS: 'fitrack_programs',
-  MEALS: 'fitrack_meals',
-  SLEEP: 'fitrack_sleep',
-  SUPPLEMENTS: 'fitrack_supplements',
-  JOURNAL: 'fitrack_journal',
-  STEPS: 'fitrack_steps'
+  USER: 'welltrack_user',
+  ACTIVITIES: 'welltrack_activities',
+  PROGRAMS: 'welltrack_programs',
+  MEALS: 'welltrack_meals',
+  SLEEP: 'welltrack_sleep',
+  SUPPLEMENTS: 'welltrack_supplements',
+  JOURNAL: 'welltrack_journal',
+  STEPS: 'welltrack_steps',
+  HYDRATION: 'welltrack_hydration'
 };
 
 const DEFAULT_USER: UserProfile = {
-  name: "Athlète",
-  age: 25,
-  weight: 70,
-  height: 175,
+  name: "Athlète WellTrack",
+  age: 28,
+  weight: 75,
+  height: 180,
   gender: 'M',
   points: 0,
   level: 1,
   badges: [],
-  availableEquipment: ['Poids du corps']
+  availableEquipment: ['Poids du corps'],
+  hydrationGoal: 2500
 };
 
 export const useAppData = () => {
@@ -43,6 +45,7 @@ export const useAppData = () => {
   ]));
   const [journal, setJournal] = useState<JournalEntry[]>(() => load(STORAGE_KEYS.JOURNAL, []));
   const [dailySteps, setDailySteps] = useState<number>(() => load(STORAGE_KEYS.STEPS, 0));
+  const [hydration, setHydration] = useState<number>(() => load(STORAGE_KEYS.HYDRATION, 0));
   const [isHealthConnected, setIsHealthConnected] = useState(false);
 
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user)); }, [user]);
@@ -53,6 +56,7 @@ export const useAppData = () => {
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SUPPLEMENTS, JSON.stringify(supplements)); }, [supplements]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.JOURNAL, JSON.stringify(journal)); }, [journal]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.STEPS, JSON.stringify(dailySteps)); }, [dailySteps]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.HYDRATION, JSON.stringify(hydration)); }, [hydration]);
 
   const dailyCalories = meals
     .filter(m => new Date(m.timestamp).toDateString() === new Date().toDateString())
@@ -74,38 +78,41 @@ export const useAppData = () => {
     setUser(prev => ({ ...prev, points: prev.points + 25 }));
   };
 
+  // Add missing actions for programs and journal entries
   const addProgram = (program: WorkoutProgram) => {
-    setPrograms(prev => [...prev, program]);
+    setPrograms(prev => [program, ...prev]);
   };
 
   const updateProgram = (id: string, updates: Partial<WorkoutProgram>) => {
     setPrograms(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
   };
 
-  const deleteProgram = (id: string) => {
-    setPrograms(prev => prev.filter(p => p.id !== id));
+  const addJournalEntry = (entry: JournalEntry) => {
+    setJournal(prev => [entry, ...prev]);
   };
 
   const toggleSupplement = (id: string) => {
     setSupplements(prev => prev.map(s => s.id === id ? { ...s, taken: !s.taken } : s));
   };
 
-  const addJournalEntry = (entry: JournalEntry) => {
-    setJournal(prev => [entry, ...prev]);
-    setUser(prev => ({ ...prev, points: prev.points + 15 }));
+  const addHydration = (amount: number) => {
+    setHydration(prev => prev + amount);
+    setUser(prev => ({ ...prev, points: prev.points + 2 }));
   };
 
   const syncHealthData = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newSteps = dailySteps + Math.floor(Math.random() * 5000) + 2000;
-    setDailySteps(newSteps); 
+    setDailySteps(prev => prev + 2500); 
     setIsHealthConnected(true);
     setUser(prev => ({ ...prev, points: prev.points + 50 })); 
   };
 
   return {
     user, activities, programs, meals, sleepHistory, supplements, journal,
-    stats: { dailyCalories, dailySteps, dailySleep, isHealthConnected },
-    actions: { updateUser, addMeal, addActivity, addProgram, updateProgram, deleteProgram, toggleSupplement, addJournalEntry, syncHealthData }
+    stats: { dailyCalories, dailySteps, dailySleep, isHealthConnected, hydration },
+    actions: { 
+      updateUser, addMeal, addActivity, setPrograms, toggleSupplement, 
+      addHydration, syncHealthData, addProgram, updateProgram, addJournalEntry 
+    }
   };
 };
