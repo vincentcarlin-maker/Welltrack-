@@ -1,6 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { UserProfile, ActivityLog, Meal, SleepLog, Supplement, JournalEntry, WorkoutProgram } from '../types';
+import { HealthSyncController } from '../services/health/HealthSyncController';
 
 const STORAGE_KEYS = {
   USER: 'welltrack_user',
@@ -58,6 +58,11 @@ export const useAppData = () => {
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.STEPS, JSON.stringify(dailySteps)); }, [dailySteps]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.HYDRATION, JSON.stringify(hydration)); }, [hydration]);
 
+  // Initial connection check
+  useEffect(() => {
+    HealthSyncController.isConnected().then(setIsHealthConnected);
+  }, []);
+
   const dailyCalories = meals
     .filter(m => new Date(m.timestamp).toDateString() === new Date().toDateString())
     .reduce((acc, meal) => acc + meal.calories, 0);
@@ -78,7 +83,6 @@ export const useAppData = () => {
     setUser(prev => ({ ...prev, points: prev.points + 25 }));
   };
 
-  // Add missing actions for programs and journal entries
   const addProgram = (program: WorkoutProgram) => {
     setPrograms(prev => [program, ...prev]);
   };
@@ -101,10 +105,12 @@ export const useAppData = () => {
   };
 
   const syncHealthData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setDailySteps(prev => prev + 2500); 
-    setIsHealthConnected(true);
-    setUser(prev => ({ ...prev, points: prev.points + 50 })); 
+    const activityData = await HealthSyncController.sync();
+    if (activityData) {
+      setDailySteps(activityData.steps_per_day);
+      setIsHealthConnected(true);
+      setUser(prev => ({ ...prev, points: prev.points + 50 })); 
+    }
   };
 
   return {
