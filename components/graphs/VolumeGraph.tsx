@@ -31,7 +31,7 @@ export const VolumeGraph: React.FC<Props> = ({ data, insight }) => {
             <Tooltip 
               cursor={{ fill: '#f8fafc' }}
               contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontWeight: 700 }}
-              formatter={(value: number) => [`${value} kg`, 'Volume']}
+              formatter={(value: any) => [`${value} kg`, 'Volume']}
             />
             <Bar dataKey="volume" radius={[6, 6, 0, 0]}>
               {data.map((entry, index) => (
