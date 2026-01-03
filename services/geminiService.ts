@@ -1,8 +1,15 @@
 
+import { GoogleGenAI } from "@google/genai";
+
 /**
- * WellTrack Local Logic Service
- * Ce service remplace l'IA Gemini par des algorithmes de conseils locaux.
+ * WellTrack Logic Service
+ * Intègre l'IA Google Gemini & Imagen pour les fonctionnalités avancées.
  */
+
+// Initialisation du client seulement si la clé est présente (évite crash en dev sans env)
+const ai = process.env.API_KEY 
+  ? new GoogleGenAI({ apiKey: process.env.API_KEY }) 
+  : null;
 
 const TIPS = [
   "Buvez au moins 2L d'eau aujourd'hui pour optimiser votre récupération.",
@@ -15,31 +22,22 @@ const TIPS = [
 ];
 
 export const analyzeMealImage = async (base64Image: string): Promise<{ name: string; calories: number; macros: { p: number; c: number; f: number } }> => {
-  // Simulation locale sans API
+  // Simulation locale pour la démo instantanée
   return { 
-    name: "Plat analysé localement", 
+    name: "Plat analysé (Démo)", 
     calories: 450, 
     macros: { p: 25, c: 50, f: 15 } 
   };
 };
 
 export const getDailyRecommendations = async (contextData: string): Promise<string> => {
-  // Retourne un conseil aléatoire parmi la liste locale
   const randomIndex = Math.floor(Math.random() * TIPS.length);
   return TIPS[randomIndex];
 };
 
-export const getSleepAnalysis = async (sleepData: any): Promise<string> => {
-  if (!sleepData) return "Dormez dans une pièce fraîche et sombre.";
-  if (sleepData.durationHours < 6) return "Votre durée de sommeil est courte. Priorisez une sieste de 20min.";
-  if (sleepData.qualityScore > 80) return "Excellente qualité. Maintenez vos rituels de coucher.";
-  return "Améliorez votre environnement pour augmenter le score de qualité.";
-};
-
 export const generateWorkoutPlan = async (equipment: string[], type: string): Promise<any> => {
-  // Retourne un programme de base prédéfini localement
   return {
-    name: `Programme ${type} (Local)`,
+    name: `Programme ${type} (Auto)`,
     blocks: [
       {
         type: "SINGLE",
@@ -49,4 +47,53 @@ export const generateWorkoutPlan = async (equipment: string[], type: string): Pr
       }
     ]
   };
+};
+
+/**
+ * Génère un avatar 3D anatomique futuriste via Gemini Image Generation
+ * Utilise gemini-2.5-flash-image pour une meilleure disponibilité que Imagen direct.
+ */
+export const generateAvatarBase = async (): Promise<string | null> => {
+  if (!ai) {
+    console.error("API Key manquante");
+    return null;
+  }
+
+  try {
+    // Utilisation de gemini-2.5-flash-image (via generateContent) au lieu de imagen-3.0
+    // pour éviter les erreurs 404 sur les clés API standard.
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: {
+        parts: [
+          {
+            text: 'A futuristic 3D wireframe anatomical human body scan silhouette, front view, dark blue void background, glowing cyan contour lines, symmetric, neutral pose, arms slightly apart, highly detailed medical sci-fi visualization, unreal engine 5 render, centered.',
+          },
+        ],
+      },
+      config: {
+        // Configuration spécifique pour la génération d'image
+        imageConfig: {
+          aspectRatio: "9:16",
+        }
+      }
+    });
+
+    // L'image est retournée dans inlineData d'une des parties du contenu
+    if (response.candidates?.[0]?.content?.parts) {
+      for (const part of response.candidates[0].content.parts) {
+        if (part.inlineData && part.inlineData.data) {
+          const base64 = part.inlineData.data;
+          // Le mimeType est souvent image/png ou image/jpeg
+          const mimeType = part.inlineData.mimeType || 'image/png';
+          return `data:${mimeType};base64,${base64}`;
+        }
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Erreur Génération Avatar:", error);
+    return null;
+  }
 };
