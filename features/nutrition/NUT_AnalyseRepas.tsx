@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Meal } from '../../types';
 import { analyzeMealImage } from '../../services/geminiService';
-import { ChevronLeft, Camera, Loader2, Sparkles, Check, X, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, Camera, Loader2, Sparkles, Check, X, Image as ImageIcon, AlertCircle } from 'lucide-react';
 
 interface Props {
   onSave: (meal: Meal) => void;
@@ -13,6 +13,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,14 +22,20 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
 
     const reader = new FileReader();
     reader.onloadend = async () => {
-      setPreviewUrl(reader.result as string);
+      const base64 = reader.result as string;
+      setPreviewUrl(base64);
       setLoading(true);
-      // Simulation Fitrack
-      setTimeout(async () => {
-        const analysis = await analyzeMealImage("");
+      setError(null);
+      
+      try {
+        const analysis = await analyzeMealImage(base64);
         setResult(analysis);
+      } catch (err: any) {
+        setError(err.message || "Erreur d'analyse");
+        console.error(err);
+      } finally {
         setLoading(false);
-      }, 1500);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -52,7 +59,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
     <div className="bg-slate-900 min-h-screen text-white pb-24 pt-6 px-6 flex flex-col animate-in fade-in">
       <header className="flex items-center gap-4 mb-8">
         <button onClick={onCancel} className="p-2 -ml-2 text-white/70"><ChevronLeft size={24} /></button>
-        <h2 className="text-xl font-bold uppercase tracking-tighter">Scan Fitrack</h2>
+        <h2 className="text-xl font-bold uppercase tracking-tighter">Scan IA Gratuit</h2>
       </header>
 
       {!previewUrl && (
@@ -63,7 +70,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
           </div>
           <div>
             <h3 className="text-2xl font-[900] mb-2 uppercase tracking-tighter">Analyse Nutrition</h3>
-            <p className="text-slate-400 text-sm max-w-[250px]">Prenez votre plat en photo pour une identification instantanée par Fitrack.</p>
+            <p className="text-slate-400 text-sm max-w-[250px]">Prenez votre plat en photo. Le modèle Gemini Flash analysera les calories gratuitement.</p>
           </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
@@ -82,17 +89,25 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              {loading && (
                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
                   <Loader2 size={48} className="animate-spin text-brand-accent mb-4" />
-                  <p className="font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Fitrack Scanning...</p>
+                  <p className="font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Analyse gratuite en cours...</p>
                </div>
              )}
           </div>
+
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/50 p-6 rounded-3xl text-center mb-6">
+               <AlertCircle className="mx-auto mb-2 text-red-400" />
+               <p className="text-xs font-bold text-red-200">{error}</p>
+               <button onClick={() => {setPreviewUrl(null); setError(null);}} className="mt-4 text-[10px] uppercase font-black underline">Réessayer</button>
+            </div>
+          )}
 
           {result && !loading && (
             <div className="bg-white/10 backdrop-blur-xl rounded-[2rem] p-6 border border-white/10 animate-in slide-in-from-bottom">
                <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest flex items-center gap-1">
-                       <Sparkles size={10} /> Fitrack Smart Data
+                       <Sparkles size={10} /> Smart Flash Data
                     </span>
                     <h4 className="text-xl font-bold">{result.name}</h4>
                   </div>

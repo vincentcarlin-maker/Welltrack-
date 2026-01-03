@@ -12,35 +12,31 @@ export const getCoachResponse = async (
   }
 ) => {
   const apiKey = process.env.API_KEY;
-  if (!apiKey || apiKey === "undefined") {
-    return "Erreur : Clé API non détectée. Vérifiez vos secrets GitHub.";
+  
+  if (!apiKey || apiKey === "undefined" || apiKey === "") {
+    return "⚠️ CLÉ API MANQUANTE : Pour activer le coach sur GitHub, allez dans Settings > Secrets > Actions de votre dépôt et ajoutez 'API_KEY'.";
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const { user, lastActivity, dailyCalories, hydration } = context;
+  const { user, dailyCalories, hydration } = context;
   
-  const systemInstruction = `Tu es le Coach WellTrack, un expert en musculation et nutrition.
-Utilisateur : ${user.name}, ${user.weight}kg, Niveau ${user.level}.
-Stats jour : ${dailyCalories}kcal, ${hydration}ml d'eau.
-Dernier sport : ${lastActivity ? lastActivity.type : 'aucun'}.
-Sois court, motivant et précis.`;
+  const systemInstruction = `Tu es le Coach WellTrack. Utilisateur: ${user.name}, ${user.weight}kg. Stats: ${dailyCalories}kcal, ${hydration}ml. Réponds de façon brève et motivante.`;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
+      model: "gemini-3-flash-preview", // Version gratuite
       contents: messages.map(m => ({
         role: m.role === 'user' ? 'user' : 'model',
         parts: [{ text: m.content }]
       })),
-      config: {
-        systemInstruction,
-        temperature: 0.7,
-      }
+      config: { systemInstruction, temperature: 0.7 }
     });
 
     return response.text || "Je n'ai pas pu générer de réponse.";
-  } catch (error) {
-    console.error("Coach API Error:", error);
-    return "Erreur de connexion avec l'IA. Vérifiez votre clé API.";
+  } catch (error: any) {
+    if (error.message?.includes("API_KEY_INVALID")) {
+      return "⚠️ CLÉ API INVALIDE : La clé configurée dans GitHub Secrets n'est pas reconnue par Google.";
+    }
+    return "Désolé, j'ai une petite baisse d'énergie (Erreur de connexion).";
   }
 };
