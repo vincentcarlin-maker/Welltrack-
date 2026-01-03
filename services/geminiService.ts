@@ -2,8 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 /**
- * WellTrack Logic Service - Version Gratuite (Gemini 3 Flash)
- * Optimisé pour la stabilité et le déploiement statique.
+ * WellTrack Logic Service - Version Gratuite avec gestion de Quota
  */
 
 const getAiClient = () => {
@@ -12,19 +11,35 @@ const getAiClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
+/**
+ * Utilitaire pour retenter une fonction en cas d'erreur 429 (Quota)
+ */
+async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 2000): Promise<T> {
+  try {
+    return await fn();
+  } catch (error: any) {
+    if (retries > 0 && (error.message?.includes("429") || error.status === 429 || error.message?.includes("RESOURCE_EXHAUSTED"))) {
+      console.warn(`Quota atteint. Nouvelle tentative dans ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return withRetry(fn, retries - 1, delay * 2);
+    }
+    throw error;
+  }
+}
+
 export const analyzeMealImage = async (base64Image: string): Promise<{ name: string; calories: number; macros: { p: number; c: number; f: number } }> => {
   const ai = getAiClient();
-  if (!ai) throw new Error("Clé API non configurée dans l'environnement.");
+  if (!ai) throw new Error("Clé API manquante dans GitHub Secrets.");
 
   const base64Data = base64Image.split(',')[1] || base64Image;
 
-  try {
+  return withRetry(async () => {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: {
         parts: [
           { inlineData: { mimeType: 'image/jpeg', data: base64Data } },
-          { text: "Analyse ce repas. Donne le nom, calories, protéines, glucides, lipides. Réponds en JSON : {name, calories, protein, carbs, fats}." },
+          { text: "Analyse ce repas. Donne le nom, calories, protéines, glucides, lipides. Réponds UNIQUEMENT en JSON : {name, calories, protein, carbs, fats}." },
         ],
       },
       config: {
@@ -43,61 +58,51 @@ export const analyzeMealImage = async (base64Image: string): Promise<{ name: str
       },
     });
 
-    const text = response.text;
-    const data = JSON.parse(text || "{}");
+    const data = JSON.parse(response.text || "{}");
     return {
       name: data.name || "Plat analysé",
       calories: data.calories || 0,
       macros: { p: data.protein || 0, c: data.carbs || 0, f: data.fats || 0 }
     };
-  } catch (error) {
-    console.error("Erreur Scan Nutrition:", error);
-    throw error;
-  }
+  });
 };
 
 export const getDailyRecommendations = async (contextData: string): Promise<string> => {
   const ai = getAiClient();
-  if (!ai) return "IA en attente de configuration API.";
+  if (!ai) return "IA en attente de configuration.";
 
-  try {
+  return withRetry(async () => {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Donne un conseil de santé court (max 15 mots) pour : ${contextData}`,
+      contents: `Donne un conseil de santé court (max 12 mots) pour : ${contextData}`,
     });
-    return response.text || "Restez actif et hydraté !";
-  } catch (error) {
-    return "La régularité est votre meilleure alliée.";
-  }
+    return response.text || "Restez actif !";
+  });
 };
 
 export const generateWorkoutPlan = async (equipment: string[], type: string): Promise<any> => {
   const ai = getAiClient();
   if (!ai) return null;
 
-  try {
+  return withRetry(async () => {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Programme ${type} avec : ${equipment.join(', ')}. Format JSON {name, blocks: [{type, exercises: [{name, sets, reps, weight, restSeconds}]}]}.`,
       config: { responseMimeType: "application/json" }
     });
-    const text = response.text;
-    return text ? JSON.parse(text) : null;
-  } catch (error) {
-    console.error("Erreur Générateur Programme:", error);
-    return null;
-  }
+    return response.text ? JSON.parse(response.text) : null;
+  });
 };
 
 export const generateAvatarBase = async (): Promise<string | null> => {
   const ai = getAiClient();
   if (!ai) return null;
 
-  try {
+  return withRetry(async () => {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
-        parts: [{ text: 'Detailed muscular anatomy body scan, front view, futuristic blue glowing fibers, deep dark background, 4k.' }],
+        parts: [{ text: 'Anatomical body scan, futuristic blue glowing fibers, dark background.' }],
       },
       config: { imageConfig: { aspectRatio: "9:16" } }
     });
@@ -105,15 +110,11 @@ export const generateAvatarBase = async (): Promise<string | null> => {
     const candidate = response.candidates?.[0];
     if (candidate?.content?.parts) {
       for (const part of candidate.content.parts) {
-        if (part.inlineData && part.inlineData.data) {
-          const mimeType = part.inlineData.mimeType || 'image/png';
-          return `data:${mimeType};base64,${part.inlineData.data}`;
+        if (part.inlineData?.data) {
+          return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
         }
       }
     }
     return null;
-  } catch (error) {
-    console.error("Erreur Génération Avatar:", error);
-    return null;
-  }
+  });
 };

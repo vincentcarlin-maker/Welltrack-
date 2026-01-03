@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Meal } from '../../types';
 import { analyzeMealImage } from '../../services/geminiService';
-import { ChevronLeft, Camera, Loader2, Sparkles, Check, X, Image as ImageIcon, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Camera, Loader2, Sparkles, Check, X, Image as ImageIcon, AlertCircle, Clock } from 'lucide-react';
 
 interface Props {
   onSave: (meal: Meal) => void;
@@ -31,7 +31,11 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
         const analysis = await analyzeMealImage(base64);
         setResult(analysis);
       } catch (err: any) {
-        setError(err.message || "Erreur d'analyse");
+        let msg = "Une erreur est survenue.";
+        if (err.message?.includes("429") || err.message?.includes("RESOURCE_EXHAUSTED")) {
+          msg = "Quota gratuit épuisé pour l'instant. Veuillez patienter 30 secondes avant de réessayer.";
+        }
+        setError(msg);
         console.error(err);
       } finally {
         setLoading(false);
@@ -59,7 +63,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
     <div className="bg-slate-900 min-h-screen text-white pb-24 pt-6 px-6 flex flex-col animate-in fade-in">
       <header className="flex items-center gap-4 mb-8">
         <button onClick={onCancel} className="p-2 -ml-2 text-white/70"><ChevronLeft size={24} /></button>
-        <h2 className="text-xl font-bold uppercase tracking-tighter">Scan IA Gratuit</h2>
+        <h2 className="text-xl font-bold uppercase tracking-tighter">Scan IA Nutrition</h2>
       </header>
 
       {!previewUrl && (
@@ -69,8 +73,8 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              <Camera size={48} className="text-brand-accent relative z-10" />
           </div>
           <div>
-            <h3 className="text-2xl font-[900] mb-2 uppercase tracking-tighter">Analyse Nutrition</h3>
-            <p className="text-slate-400 text-sm max-w-[250px]">Prenez votre plat en photo. Le modèle Gemini Flash analysera les calories gratuitement.</p>
+            <h3 className="text-2xl font-[900] mb-2 uppercase tracking-tighter">Analyse par Image</h3>
+            <p className="text-slate-400 text-sm max-w-[250px]">Prenez votre plat en photo pour un calcul automatique des calories.</p>
           </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
@@ -89,16 +93,24 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
              {loading && (
                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
                   <Loader2 size={48} className="animate-spin text-brand-accent mb-4" />
-                  <p className="font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Analyse gratuite en cours...</p>
+                  <p className="font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Traitement IA intelligent...</p>
                </div>
              )}
           </div>
 
           {error && (
-            <div className="bg-red-500/20 border border-red-500/50 p-6 rounded-3xl text-center mb-6">
-               <AlertCircle className="mx-auto mb-2 text-red-400" />
-               <p className="text-xs font-bold text-red-200">{error}</p>
-               <button onClick={() => {setPreviewUrl(null); setError(null);}} className="mt-4 text-[10px] uppercase font-black underline">Réessayer</button>
+            <div className="bg-slate-800 border border-amber-500/30 p-8 rounded-[2.5rem] text-center mb-6 animate-in zoom-in">
+               <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="text-amber-500" size={32} />
+               </div>
+               <h4 className="text-lg font-bold mb-2">Pause nécessaire</h4>
+               <p className="text-xs font-medium text-slate-400 leading-relaxed mb-6">{error}</p>
+               <button 
+                  onClick={() => {setPreviewUrl(null); setError(null);}} 
+                  className="w-full bg-white/10 py-4 rounded-xl text-[10px] uppercase font-black tracking-widest hover:bg-white/20 transition-colors"
+               >
+                  Retour
+               </button>
             </div>
           )}
 
@@ -107,7 +119,7 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
                <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest flex items-center gap-1">
-                       <Sparkles size={10} /> Smart Flash Data
+                       <Sparkles size={10} /> Analyse Réussie
                     </span>
                     <h4 className="text-xl font-bold">{result.name}</h4>
                   </div>
@@ -134,10 +146,10 @@ export const NUT_AnalyseRepas: React.FC<Props> = ({ onSave, onCancel }) => {
 
                <div className="flex gap-3">
                   <button onClick={() => {setPreviewUrl(null); setResult(null);}} className="flex-1 bg-white/10 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
-                     <X size={18} /> Refuser
+                     <X size={18} /> Annuler
                   </button>
                   <button onClick={handleConfirm} className="flex-[2] bg-brand-blue py-4 rounded-xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
-                     <Check size={18} /> Enregistrer
+                     <Check size={18} /> Valider
                   </button>
                </div>
             </div>
