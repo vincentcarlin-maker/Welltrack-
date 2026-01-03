@@ -60,31 +60,28 @@ export const generateAvatarBase = async (): Promise<string | null> => {
   }
 
   try {
-    // Utilisation de gemini-2.5-flash-image (via generateContent) au lieu de imagen-3.0
-    // pour éviter les erreurs 404 sur les clés API standard.
+    // Utilisation de gemini-2.5-flash-image
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
           {
-            text: 'Detailed full body muscular anatomy chart, front view, showcasing all major muscle groups (pecs, abs, quads, deltoids, biceps), futuristic medical scan style, glowing bio-luminescent blue and cyan muscle fibers on deep dark void background, hyper-realistic, 8k resolution, symmetric standing pose, arms slightly apart, no skin, raw muscle texture visualization.',
+            // Prompt optimisé : "high quality" au lieu de "8k" pour éviter les images trop lourdes qui font crasher le preview
+            text: 'Detailed full body muscular anatomy chart, front view, showcasing all major muscle groups (pecs, abs, quads, deltoids, biceps), futuristic medical scan style, glowing bio-luminescent blue and cyan muscle fibers on deep dark void background, hyper-realistic, high quality, symmetric standing pose, arms slightly apart, no skin, raw muscle texture visualization.',
           },
         ],
       },
       config: {
-        // Configuration spécifique pour la génération d'image
         imageConfig: {
           aspectRatio: "9:16",
         }
       }
     });
 
-    // L'image est retournée dans inlineData d'une des parties du contenu
     if (response.candidates?.[0]?.content?.parts) {
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData && part.inlineData.data) {
           const base64 = part.inlineData.data;
-          // Le mimeType est souvent image/png ou image/jpeg
           const mimeType = part.inlineData.mimeType || 'image/png';
           return `data:${mimeType};base64,${base64}`;
         }

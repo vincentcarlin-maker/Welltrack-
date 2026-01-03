@@ -21,7 +21,9 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
   const displayUrl = previewUrl || savedUrl;
 
   const handleGenerateAvatar = async (e: React.MouseEvent) => {
+    e.preventDefault(); // EMPÊCHE LE RECHARGEMENT DE LA PAGE
     e.stopPropagation();
+    
     setIsGenerating(true);
     const url = await generateAvatarBase();
     if (url) {
@@ -31,6 +33,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
   };
 
   const handleConfirm = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (previewUrl) {
       setSavedUrl(previewUrl);
@@ -40,11 +43,13 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
   };
 
   const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    setPreviewUrl(null); // On annule la prévisualisation, on revient à l'état précédent (savedUrl)
+    setPreviewUrl(null); // On annule la prévisualisation
   };
 
   const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (window.confirm("Supprimer cet avatar ?")) {
         setSavedUrl(null);
@@ -112,12 +117,14 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
              {previewUrl ? (
                <>
                   <button 
+                    type="button"
                     onClick={handleCancel}
                     className="bg-red-500/20 backdrop-blur-md p-2 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
                   >
                     <X size={16} />
                   </button>
                   <button 
+                    type="button"
                     onClick={handleConfirm}
                     className="bg-emerald-500/20 backdrop-blur-md p-2 rounded-xl border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
                   >
@@ -128,6 +135,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
                <>
                  {savedUrl && (
                    <button 
+                     type="button"
                      onClick={handleDelete}
                      className="bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white/40 hover:text-red-400 transition-all active:scale-95"
                    >
@@ -135,6 +143,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
                    </button>
                  )}
                  <button 
+                  type="button" // IMPORTANT: type="button" empêche la soumission de formulaire
                   onClick={handleGenerateAvatar}
                   disabled={isGenerating}
                   className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50"
