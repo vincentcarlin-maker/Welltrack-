@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   define: {
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || process.env.VITE_API_KEY)
+    // On s'assure que process.env.API_KEY est remplacé par une chaîne brute lors du build
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || process.env.VITE_API_KEY || "")
   }
 })
