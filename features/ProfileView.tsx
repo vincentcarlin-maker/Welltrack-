@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { UserProfile } from '../types';
+import { UserProfile, ViewState } from '../types';
 // Fixed missing 'Zap' import
 import { User, Ruler, Weight, Info, ChevronRight, Settings, Droplets, Zap } from 'lucide-react';
 import { WellTrackLogo } from '../components/WellTrackLogo';
@@ -18,7 +18,13 @@ const ProfileField = ({ icon, label, name, value, onChange, type = "text" }: any
   </div>
 );
 
-export const ProfileView: React.FC<{ user: UserProfile, onUpdate: (d: Partial<UserProfile>) => void }> = ({ user, onUpdate }) => {
+interface ProfileViewProps {
+  user: UserProfile;
+  onUpdate: (d: Partial<UserProfile>) => void;
+  onChangeView: (view: ViewState) => void;
+}
+
+export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdate, onChangeView }) => {
   const [formData, setFormData] = useState({ ...user, age: user.age.toString(), weight: user.weight.toString(), height: user.height.toString(), hydrationGoal: user.hydrationGoal.toString() });
   const [saved, setSaved] = useState(false);
 
@@ -44,7 +50,12 @@ export const ProfileView: React.FC<{ user: UserProfile, onUpdate: (d: Partial<Us
            <h1 className="text-3xl font-black uppercase tracking-tighter">Profil</h1>
            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">WellTrack Elite Member</p>
         </div>
-        <button className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100"><Settings size={20} className="text-slate-400" /></button>
+        <button 
+          onClick={() => onChangeView(ViewState.ADMIN)} 
+          className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100 active:scale-95 transition-transform group"
+        >
+          <Settings size={20} className="text-slate-400 group-hover:text-slate-800 transition-colors" />
+        </button>
       </header>
 
       <div className="px-8 flex flex-col items-center mb-10">

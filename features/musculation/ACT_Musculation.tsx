@@ -79,7 +79,10 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Prêt à l'effort</p>
           </div>
         </div>
-        <RecoveryMuscleMap activities={localActivities} />
+        <div className="overflow-hidden rounded-[3rem] border border-slate-200">
+          {/* Mode 'display' ici désactive les boutons de génération */}
+          <RecoveryMuscleMap activities={localActivities} mode="display" />
+        </div>
       </section>
 
       {/* IA Coach Widget */}

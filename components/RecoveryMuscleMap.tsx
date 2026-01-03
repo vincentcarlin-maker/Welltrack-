@@ -7,11 +7,12 @@ import { Scan, Sparkles, Loader2, Check, X, Trash2 } from 'lucide-react';
 interface Props {
   activities: ActivityLog[];
   size?: number;
+  mode?: 'display' | 'admin'; // 'display' pour lecture seule, 'admin' pour génération
 }
 
 type MuscleStatus = 'fatigued' | 'recovering' | 'ready';
 
-export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) => {
+export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mode = 'display' }) => {
   const [savedUrl, setSavedUrl] = useState<string | null>(localStorage.getItem('welltrack_avatar_scan'));
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -89,8 +90,8 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
         )}
       </div>
       
-      {/* Scanning Animation (Active seulement si pas d'image ou pendant génération) */}
-      {(isGenerating || !displayUrl) && (
+      {/* Scanning Animation (Active seulement pendant génération ou preview) */}
+      {(isGenerating || previewUrl) && (
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent animate-[scan_4s_linear_infinite] z-20 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
       )}
       <style>{`
@@ -105,44 +106,46 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
       {/* Interactive Layer */}
       <div className="relative z-10 w-full h-full flex flex-col items-center pt-8 pb-4">
         
-        {/* Controls (Top Right) */}
-        <div className="absolute top-4 right-4 flex gap-2 z-50">
-           {previewUrl ? (
-             <>
-                <button 
-                  onClick={handleCancel}
-                  className="bg-red-500/20 backdrop-blur-md p-2 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
-                >
-                  <X size={16} />
-                </button>
-                <button 
-                  onClick={handleConfirm}
-                  className="bg-emerald-500/20 backdrop-blur-md p-2 rounded-xl border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
-                >
-                  <Check size={16} />
-                </button>
-             </>
-           ) : (
-             <>
-               {savedUrl && (
+        {/* Controls (Top Right) - Only visible in ADMIN mode */}
+        {mode === 'admin' && (
+          <div className="absolute top-4 right-4 flex gap-2 z-50">
+             {previewUrl ? (
+               <>
+                  <button 
+                    onClick={handleCancel}
+                    className="bg-red-500/20 backdrop-blur-md p-2 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
+                  >
+                    <X size={16} />
+                  </button>
+                  <button 
+                    onClick={handleConfirm}
+                    className="bg-emerald-500/20 backdrop-blur-md p-2 rounded-xl border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
+                  >
+                    <Check size={16} />
+                  </button>
+               </>
+             ) : (
+               <>
+                 {savedUrl && (
+                   <button 
+                     onClick={handleDelete}
+                     className="bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white/40 hover:text-red-400 transition-all active:scale-95"
+                   >
+                     <Trash2 size={16} />
+                   </button>
+                 )}
                  <button 
-                   onClick={handleDelete}
-                   className="bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white/40 hover:text-red-400 transition-all active:scale-95"
-                 >
-                   <Trash2 size={16} />
-                 </button>
-               )}
-               <button 
-                onClick={handleGenerateAvatar}
-                disabled={isGenerating}
-                className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50"
-              >
-                {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
-                <span className="sr-only">Générer Avatar Muscles</span>
-              </button>
-             </>
-           )}
-        </div>
+                  onClick={handleGenerateAvatar}
+                  disabled={isGenerating}
+                  className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
+                  <span className="sr-only">Générer Avatar Muscles</span>
+                </button>
+               </>
+             )}
+          </div>
+        )}
 
         {/* SVG Overlay for Muscle Status */}
         <svg viewBox="0 0 120 220" style={{ width: size, height: 'auto' }} className="drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] mt-4">

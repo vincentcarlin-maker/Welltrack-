@@ -9,7 +9,8 @@ export enum ViewState {
   GAMIFICATION = 'GAMIFICATION',
   RECOMMENDATIONS = 'RECOMMENDATIONS',
   PROFILE = 'PROFILE',
-  COACH = 'COACH'
+  COACH = 'COACH',
+  ADMIN = 'ADMIN'
 }
 
 export interface UserProfile {

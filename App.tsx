@@ -7,6 +7,7 @@ import { SleepView } from './features/SleepView';
 import { NutritionView } from './features/NutritionView';
 import { GamificationView } from './features/GamificationView';
 import { ProfileView } from './features/ProfileView';
+import { AdminView } from './features/AdminView'; // New import
 import { COM_Complements } from './features/complements/COM_Complements';
 import { JOU_Journal } from './features/journal/JOU_Journal';
 import { REC_Recommandations } from './features/recommendations/REC_Recommandations';
@@ -33,7 +34,9 @@ export default function App() {
       case ViewState.GAMIFICATION:
         return <GamificationView user={user} />;
       case ViewState.PROFILE:
-        return <ProfileView user={user} onUpdate={actions.updateUser} />;
+        return <ProfileView user={user} onUpdate={actions.updateUser} onChangeView={setActiveView} />;
+      case ViewState.ADMIN:
+        return <AdminView user={user} activities={activities} onBack={() => setActiveView(ViewState.PROFILE)} />;
       case ViewState.JOURNAL:
         return <JOU_Journal onSave={(entry) => { actions.addJournalEntry(entry); setActiveView(ViewState.HOME); }} onCancel={() => setActiveView(ViewState.HOME)} />;
       case ViewState.RECOMMENDATIONS:
