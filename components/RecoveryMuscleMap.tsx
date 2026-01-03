@@ -44,7 +44,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
     fatigued: 'rgba(251, 113, 133, 0.6)',   // Rose
     recovering: 'rgba(251, 191, 36, 0.5)', // Amber
     ready: 'rgba(52, 211, 153, 0.1)',      // Emerald (très transparent si prêt)
-    stroke: 'rgba(255,255,255,0.2)'
+    stroke: 'rgba(255,255,255,0.4)'
   };
 
   const getMuscleColor = (target: string) => colors[getStatus(target)];
@@ -56,7 +56,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
       <div className="absolute inset-0 z-0 bg-slate-900 flex items-center justify-center">
         {avatarUrl ? (
           <>
-            <img src={avatarUrl} alt="AI Body Scan" className="w-full h-full object-cover opacity-60 mix-blend-luminosity" />
+            <img src={avatarUrl} alt="AI Body Scan" className="w-full h-full object-cover opacity-90" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent"></div>
           </>
         ) : (
@@ -85,7 +85,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
           className="absolute top-4 right-4 bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50 z-50 group/btn"
         >
           {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
-          <span className="sr-only">Générer Avatar Imagen</span>
+          <span className="sr-only">Générer Avatar Muscles</span>
         </button>
 
         {/* SVG Overlay for Muscle Status */}

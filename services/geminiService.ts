@@ -67,7 +67,7 @@ export const generateAvatarBase = async (): Promise<string | null> => {
       contents: {
         parts: [
           {
-            text: 'A futuristic 3D wireframe anatomical human body scan silhouette, front view, dark blue void background, glowing cyan contour lines, symmetric, neutral pose, arms slightly apart, highly detailed medical sci-fi visualization, unreal engine 5 render, centered.',
+            text: 'Detailed full body muscular anatomy chart, front view, showcasing all major muscle groups (pecs, abs, quads, deltoids, biceps), futuristic medical scan style, glowing bio-luminescent blue and cyan muscle fibers on deep dark void background, hyper-realistic, 8k resolution, symmetric standing pose, arms slightly apart, no skin, raw muscle texture visualization.',
           },
         ],
       },
