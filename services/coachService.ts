@@ -14,7 +14,7 @@ export const getCoachResponse = async (
   const apiKey = process.env.API_KEY;
   
   if (!apiKey || apiKey === "undefined" || apiKey === "") {
-    return "⚠️ CLÉ API MANQUANTE : Pour activer le coach sur GitHub, allez dans Settings > Secrets > Actions de votre dépôt et ajoutez 'API_KEY'.";
+    return "⚠️ Configuration requise : Ajoutez votre API_KEY dans les Secrets de votre dépôt GitHub pour activer le coach.";
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -24,19 +24,17 @@ export const getCoachResponse = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview", // Version gratuite
+      model: "gemini-3-flash-preview",
       contents: messages.map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
+        role: m.role === 'user' ? 'user' : ('model' as any),
         parts: [{ text: m.content }]
       })),
       config: { systemInstruction, temperature: 0.7 }
     });
 
-    return response.text || "Je n'ai pas pu générer de réponse.";
+    return response.text || "Je n'ai pas pu analyser tes données pour le moment.";
   } catch (error: any) {
-    if (error.message?.includes("API_KEY_INVALID")) {
-      return "⚠️ CLÉ API INVALIDE : La clé configurée dans GitHub Secrets n'est pas reconnue par Google.";
-    }
-    return "Désolé, j'ai une petite baisse d'énergie (Erreur de connexion).";
+    console.error("Coach API Error:", error);
+    return "Connexion momentanément indisponible. Vérifiez votre quota d'API gratuite.";
   }
 };
