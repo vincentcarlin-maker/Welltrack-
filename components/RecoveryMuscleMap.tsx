@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityLog } from '../types';
 import { generateAvatarBase } from '../services/geminiService';
-import { Scan, Sparkles, Loader2, RefreshCcw } from 'lucide-react';
+import { Scan, Sparkles, Loader2, Check, X, Trash2 } from 'lucide-react';
 
 interface Props {
   activities: ActivityLog[];
@@ -12,18 +12,43 @@ interface Props {
 type MuscleStatus = 'fatigued' | 'recovering' | 'ready';
 
 export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) => {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem('welltrack_avatar_scan'));
+  const [savedUrl, setSavedUrl] = useState<string | null>(localStorage.getItem('welltrack_avatar_scan'));
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // L'image affichée est soit la prévisualisation, soit l'image sauvegardée
+  const displayUrl = previewUrl || savedUrl;
+
   const handleGenerateAvatar = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Empêche le clic sur la carte parente
+    e.stopPropagation();
     setIsGenerating(true);
     const url = await generateAvatarBase();
     if (url) {
-      setAvatarUrl(url);
-      localStorage.setItem('welltrack_avatar_scan', url);
+      setPreviewUrl(url); // On met en prévisualisation uniquement, pas encore sauvegardé
     }
     setIsGenerating(false);
+  };
+
+  const handleConfirm = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (previewUrl) {
+      setSavedUrl(previewUrl);
+      localStorage.setItem('welltrack_avatar_scan', previewUrl);
+      setPreviewUrl(null); // On sort du mode prévisualisation
+    }
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPreviewUrl(null); // On annule la prévisualisation, on revient à l'état précédent (savedUrl)
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm("Supprimer cet avatar ?")) {
+        setSavedUrl(null);
+        localStorage.removeItem('welltrack_avatar_scan');
+    }
   };
 
   const getStatus = (muscle: string): MuscleStatus => {
@@ -54,9 +79,9 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
       
       {/* Background & Image Layer */}
       <div className="absolute inset-0 z-0 bg-slate-900 flex items-center justify-center">
-        {avatarUrl ? (
+        {displayUrl ? (
           <>
-            <img src={avatarUrl} alt="AI Body Scan" className="w-full h-full object-cover opacity-90" />
+            <img src={displayUrl} alt="AI Body Scan" className={`w-full h-full object-cover transition-opacity duration-500 ${previewUrl ? 'opacity-100' : 'opacity-90'}`} />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent"></div>
           </>
         ) : (
@@ -64,8 +89,10 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
         )}
       </div>
       
-      {/* Scanning Animation */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent animate-[scan_4s_linear_infinite] z-20 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+      {/* Scanning Animation (Active seulement si pas d'image ou pendant génération) */}
+      {(isGenerating || !displayUrl) && (
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent animate-[scan_4s_linear_infinite] z-20 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+      )}
       <style>{`
         @keyframes scan {
           0% { top: 0%; opacity: 0; }
@@ -78,15 +105,44 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
       {/* Interactive Layer */}
       <div className="relative z-10 w-full h-full flex flex-col items-center pt-8 pb-4">
         
-        {/* Generate Button (Top Right) */}
-        <button 
-          onClick={handleGenerateAvatar}
-          disabled={isGenerating}
-          className="absolute top-4 right-4 bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50 z-50 group/btn"
-        >
-          {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
-          <span className="sr-only">Générer Avatar Muscles</span>
-        </button>
+        {/* Controls (Top Right) */}
+        <div className="absolute top-4 right-4 flex gap-2 z-50">
+           {previewUrl ? (
+             <>
+                <button 
+                  onClick={handleCancel}
+                  className="bg-red-500/20 backdrop-blur-md p-2 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
+                >
+                  <X size={16} />
+                </button>
+                <button 
+                  onClick={handleConfirm}
+                  className="bg-emerald-500/20 backdrop-blur-md p-2 rounded-xl border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
+                >
+                  <Check size={16} />
+                </button>
+             </>
+           ) : (
+             <>
+               {savedUrl && (
+                 <button 
+                   onClick={handleDelete}
+                   className="bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white/40 hover:text-red-400 transition-all active:scale-95"
+                 >
+                   <Trash2 size={16} />
+                 </button>
+               )}
+               <button 
+                onClick={handleGenerateAvatar}
+                disabled={isGenerating}
+                className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
+                <span className="sr-only">Générer Avatar Muscles</span>
+              </button>
+             </>
+           )}
+        </div>
 
         {/* SVG Overlay for Muscle Status */}
         <svg viewBox="0 0 120 220" style={{ width: size, height: 'auto' }} className="drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] mt-4">
@@ -98,7 +154,7 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
           </defs>
 
           {/* Si pas d'avatar, on affiche une silhouette de base */}
-          {!avatarUrl && (
+          {!displayUrl && (
             <path d="M60 10 C65 10 68 14 68 20 C68 26 65 30 60 30 C55 30 52 26 52 20 C52 14 55 10 60 10 Z" fill="#1E293B" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
           )}
           
@@ -126,10 +182,12 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240 }) =
         {/* Data Tags */}
         <div className="absolute top-1/3 left-4 flex flex-col items-start animate-in slide-in-from-left duration-1000">
            <div className="flex items-center gap-2 mb-1">
-             <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full shadow-[0_0_10px_#22d3ee]"></div>
-             <span className="text-[7px] font-black text-cyan-200 uppercase tracking-widest">Scan.Active</span>
+             <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_10px_currentColor] ${previewUrl ? 'bg-amber-400 text-amber-400 animate-pulse' : 'bg-cyan-400 text-cyan-400'}`}></div>
+             <span className={`text-[7px] font-black uppercase tracking-widest ${previewUrl ? 'text-amber-200' : 'text-cyan-200'}`}>
+               {previewUrl ? 'Validation...' : 'Scan.Active'}
+             </span>
            </div>
-           {!avatarUrl && <span className="text-[8px] text-slate-500 max-w-[80px]">Générez votre avatar 3D avec Imagen</span>}
+           {!displayUrl && <span className="text-[8px] text-slate-500 max-w-[80px]">Générez votre avatar 3D avec Imagen</span>}
         </div>
       </div>
 
