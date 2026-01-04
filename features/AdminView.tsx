@@ -40,17 +40,17 @@ export const AdminView: React.FC<Props> = ({ user, activities, onBack }) => {
           <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border border-slate-100">
             <p className="text-sm text-slate-500 mb-6 leading-relaxed">
               Utilisez le générateur d'avatar pour créer un jumeau numérique basé sur votre morphologie. 
-              <br/><strong className="text-slate-800">Cliquez sur l'icône ✨ en haut à droite de la carte pour générer.</strong>
+              <br/><strong className="text-slate-800">Cliquez sur l'icône de rafraîchissement pour lancer un scan, puis validez avec l'icône verte pour enregistrer.</strong>
             </p>
             
-            {/* Ici on active le mode "admin" pour afficher les contrôles de génération */}
             <div className="overflow-hidden rounded-[2rem] border border-slate-100">
-               <RecoveryMuscleMap activities={activities} mode="admin" size={280} />
+               {/* Suppression de mode="admin" qui causait l'erreur TS */}
+               <RecoveryMuscleMap activities={activities} interactive={true} />
             </div>
           </div>
         </section>
 
-        {/* Autres Paramètres (Placeholder) */}
+        {/* Autres Paramètres */}
         <section>
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-slate-200 rounded-lg text-slate-600">
