@@ -1,61 +1,36 @@
 
-import React, { useState, useEffect } from 'react';
-import { ActivityLog } from '../types';
+import { Check, Loader2, RefreshCw, X, Zap } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { generateAvatarBase } from '../services/geminiService';
-import { Scan, Sparkles, Loader2, Check, X, Trash2 } from 'lucide-react';
+import { ActivityLog } from '../types';
 
 interface Props {
   activities: ActivityLog[];
   size?: number;
-  mode?: 'display' | 'admin'; // 'display' pour lecture seule, 'admin' pour génération
+  interactive?: boolean;
 }
 
 type MuscleStatus = 'fatigued' | 'recovering' | 'ready';
 
-export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mode = 'display' }) => {
-  const [savedUrl, setSavedUrl] = useState<string | null>(localStorage.getItem('welltrack_avatar_scan'));
+export const RecoveryMuscleMap: React.FC<Props> = ({ activities, interactive = true }) => {
+  const [savedUrl, setSavedUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // L'image affichée est soit la prévisualisation, soit l'image sauvegardée
-  const displayUrl = previewUrl || savedUrl;
-
-  const handleGenerateAvatar = async (e: React.MouseEvent) => {
-    e.preventDefault(); // EMPÊCHE LE RECHARGEMENT DE LA PAGE
-    e.stopPropagation();
-    
-    setIsGenerating(true);
-    const url = await generateAvatarBase();
-    if (url) {
-      setPreviewUrl(url); // On met en prévisualisation uniquement, pas encore sauvegardé
-    }
-    setIsGenerating(false);
+  // Mapping pour l'IA (Français -> Termes anatomiques anglais pour plus de précision)
+  const muscleMapping: Record<string, string> = {
+    'Poitrine': 'Pectoralis Major muscles',
+    'Epaules': 'Deltoid muscles',
+    'Bras': 'Biceps Brachii and Triceps Brachii muscles',
+    'Abdominaux': 'Abdominal Rectus and Oblique muscles',
+    'Jambes': 'Quadriceps Femoris and Calves muscles',
+    'Dos': 'Latissimus Dorsi and Trapezius muscles'
   };
 
-  const handleConfirm = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (previewUrl) {
-      setSavedUrl(previewUrl);
-      localStorage.setItem('welltrack_avatar_scan', previewUrl);
-      setPreviewUrl(null); // On sort du mode prévisualisation
-    }
-  };
-
-  const handleCancel = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setPreviewUrl(null); // On annule la prévisualisation
-  };
-
-  const handleDelete = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (window.confirm("Supprimer cet avatar ?")) {
-        setSavedUrl(null);
-        localStorage.removeItem('welltrack_avatar_scan');
-    }
-  };
+  useEffect(() => {
+    const stored = localStorage.getItem('welltrack_avatar_scan');
+    if (stored) setSavedUrl(stored);
+  }, []);
 
   const getStatus = (muscle: string): MuscleStatus => {
     const lastSession = activities
@@ -70,154 +45,168 @@ export const RecoveryMuscleMap: React.FC<Props> = ({ activities, size = 240, mod
     return 'ready';
   };
 
-  // Couleurs ajustées pour le mode Overlay (semi-transparent)
-  const colors = {
-    fatigued: 'rgba(251, 113, 133, 0.6)',   // Rose
-    recovering: 'rgba(251, 191, 36, 0.5)', // Amber
-    ready: 'rgba(52, 211, 153, 0.1)',      // Emerald (très transparent si prêt)
-    stroke: 'rgba(255,255,255,0.4)'
+  const buildMuscleStatusDescription = () => {
+    return Object.keys(muscleMapping).map(m => {
+      const status = getStatus(m);
+      const anatomyName = muscleMapping[m];
+      let colorInstruction = "matte dark grey";
+      
+      if (status === 'fatigued') colorInstruction = "VIBRANT GLOWING NEON RED (representing high muscle fatigue)";
+      if (status === 'recovering') colorInstruction = "GLOWING AMBER ORANGE (representing recovery phase)";
+      if (status === 'ready') colorInstruction = "INTENSE GLOWING EMERALD GREEN (representing fully ready and recovered)";
+      
+      return `- ${anatomyName}: ${colorInstruction}`;
+    }).join("\n");
   };
 
-  const getMuscleColor = (target: string) => colors[getStatus(target)];
+  const handleGenerateAvatar = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsGenerating(true);
+    try {
+      const description = buildMuscleStatusDescription();
+      const url = await generateAvatarBase(description);
+      if (url) {
+        setPreviewUrl(url);
+      }
+    } catch (err) {
+      console.error("Erreur de génération d'avatar:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleConfirm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (previewUrl) {
+      setSavedUrl(previewUrl);
+      localStorage.setItem('welltrack_avatar_scan', previewUrl);
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPreviewUrl(null);
+  };
+
+  const displayUrl = previewUrl || savedUrl;
 
   return (
-    <div className="relative flex flex-col items-center bg-[#0F172A] rounded-[3rem] p-0 border border-white/5 shadow-2xl overflow-hidden group min-h-[400px]">
+    <div className="relative w-full aspect-[4/5] bg-[#070B14] rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl group">
       
-      {/* Background & Image Layer */}
-      <div className="absolute inset-0 z-0 bg-slate-900 flex items-center justify-center">
+      {/* Affichage de l'image (Preview ou Saved) */}
+      <div className="absolute inset-0 z-0 bg-slate-950 flex items-center justify-center">
         {displayUrl ? (
           <>
-            <img src={displayUrl} alt="AI Body Scan" className={`w-full h-full object-cover transition-opacity duration-500 ${previewUrl ? 'opacity-100' : 'opacity-90'}`} />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent"></div>
+            <img 
+              src={displayUrl} 
+              alt="Bio-Scan Avatar" 
+              className={`w-full h-full object-cover transition-all duration-1000 ${isGenerating ? 'blur-md opacity-40 scale-105' : 'opacity-100 scale-100'}`} 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-transparent to-transparent opacity-60"></div>
           </>
         ) : (
-          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-[#070B14]">
+             <div className="w-full h-full opacity-5 absolute" style={{ backgroundImage: 'linear-gradient(#10b981 1px, transparent 1px), linear-gradient(90deg, #10b981 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+             <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 border border-emerald-500/20 animate-pulse">
+                <Zap className="text-emerald-500" size={32} />
+             </div>
+             <h4 className="text-white font-black uppercase tracking-tighter text-lg mb-2">Scanner Bio-Ready</h4>
+             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest max-w-[200px] leading-relaxed">Générez votre jumeau numérique pour visualiser l'activation de vos fibres musculaires.</p>
+          </div>
         )}
       </div>
-      
-      {/* Scanning Animation (Active seulement pendant génération ou preview) */}
-      {(isGenerating || previewUrl) && (
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent animate-[scan_4s_linear_infinite] z-20 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+
+      {/* Laser de Scan */}
+      {(isGenerating || displayUrl) && (
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-[scan_4s_linear_infinite] z-20 shadow-[0_0_15px_rgba(16,185,129,0.8)] opacity-60"></div>
       )}
       <style>{`
         @keyframes scan {
-          0% { top: 0%; opacity: 0; }
+          0% { top: -5%; opacity: 0; }
           10% { opacity: 1; }
           90% { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
+          100% { top: 105%; opacity: 0; }
         }
       `}</style>
 
-      {/* Interactive Layer */}
-      <div className="relative z-10 w-full h-full flex flex-col items-center pt-8 pb-4">
+      {/* HUD & Interface Utilisateur */}
+      <div className="relative z-10 w-full h-full flex flex-col justify-between p-8">
         
-        {/* Controls (Top Right) - Only visible in ADMIN mode */}
-        {mode === 'admin' && (
-          <div className="absolute top-4 right-4 flex gap-2 z-50">
-             {previewUrl ? (
-               <>
-                  <button 
-                    type="button"
-                    onClick={handleCancel}
-                    className="bg-red-500/20 backdrop-blur-md p-2 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
-                  >
-                    <X size={16} />
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={handleConfirm}
-                    className="bg-emerald-500/20 backdrop-blur-md p-2 rounded-xl border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 animate-in zoom-in"
-                  >
-                    <Check size={16} />
-                  </button>
-               </>
-             ) : (
-               <>
-                 {savedUrl && (
-                   <button 
-                     type="button"
-                     onClick={handleDelete}
-                     className="bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white/40 hover:text-red-400 transition-all active:scale-95"
-                   >
-                     <Trash2 size={16} />
-                   </button>
-                 )}
-                 <button 
-                  type="button" // IMPORTANT: type="button" empêche la soumission de formulaire
-                  onClick={handleGenerateAvatar}
-                  disabled={isGenerating}
-                  className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all active:scale-95 disabled:opacity-50"
-                >
-                  {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="text-cyan-400" />}
-                  <span className="sr-only">Générer Avatar Muscles</span>
-                </button>
-               </>
-             )}
+        {/* Barre Supérieure: Statut et Contrôles */}
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-xl rounded-full border border-white/10">
+               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+               <span className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-400">Bio.Integrity: {previewUrl ? 'Scanning...' : 'Locked'}</span>
+            </div>
+            {displayUrl && (
+              <div className="px-3 py-1 bg-white/5 backdrop-blur-sm rounded-lg border border-white/5">
+                <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Model_Type: Ecorche_Fiber_Optic</span>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* SVG Overlay for Muscle Status */}
-        <svg viewBox="0 0 120 220" style={{ width: size, height: 'auto' }} className="drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] mt-4">
-          <defs>
-            <filter id="glow-fatigue">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-
-          {/* Si pas d'avatar, on affiche une silhouette de base */}
-          {!displayUrl && (
-            <path d="M60 10 C65 10 68 14 68 20 C68 26 65 30 60 30 C55 30 52 26 52 20 C52 14 55 10 60 10 Z" fill="#1E293B" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
+          {interactive && (
+            <div className="flex gap-2">
+               {previewUrl ? (
+                 <>
+                    <button onClick={handleConfirm} className="bg-emerald-500 p-3 rounded-2xl text-white shadow-lg active:scale-90 transition-transform">
+                      <Check size={20} />
+                    </button>
+                    <button onClick={handleCancel} className="bg-rose-500 p-3 rounded-2xl text-white shadow-lg active:scale-90 transition-transform">
+                      <X size={20} />
+                    </button>
+                 </>
+               ) : (
+                 <button 
+                    onClick={handleGenerateAvatar} 
+                    disabled={isGenerating}
+                    className={`p-3 rounded-2xl backdrop-blur-xl border transition-all active:scale-90 ${isGenerating ? 'bg-white/5 border-white/5' : 'bg-white/10 border-white/10 hover:bg-white/20'}`}
+                  >
+                    {isGenerating ? <Loader2 size={20} className="animate-spin text-emerald-400" /> : <RefreshCw size={20} className="text-emerald-400" />}
+                  </button>
+               )}
+            </div>
           )}
-          
-          {/* Muscle Zones (Clickable/Overlay) */}
-          <g style={{ mixBlendMode: 'plus-lighter' }}>
-             {/* Shoulders / Traps */}
-             <path d="M40 40 Q60 32 80 40 L85 55 L35 55 Z" fill={getMuscleColor('Epaules')} stroke={colors.stroke} strokeWidth="0.5" className="transition-all duration-500 hover:opacity-80" />
-             
-             {/* Chest */}
-             <path d="M42 45 Q60 40 78 45 C80 60 70 65 60 65 C50 65 40 60 42 45 Z" fill={getMuscleColor('Poitrine')} stroke={colors.stroke} strokeWidth="0.5" className="transition-all duration-500" />
-             
-             {/* Arms */}
-             <path d="M32 45 L20 90 Q25 95 30 90 L38 55 Z" fill={getMuscleColor('Bras')} stroke={colors.stroke} strokeWidth="0.5" />
-             <path d="M88 45 L100 90 Q95 95 90 90 L82 55 Z" fill={getMuscleColor('Bras')} stroke={colors.stroke} strokeWidth="0.5" />
-             
-             {/* Abs */}
-             <path d="M48 68 Q60 65 72 68 L70 100 Q60 105 50 100 Z" fill={getMuscleColor('Abdominaux')} stroke={colors.stroke} strokeWidth="0.5" />
-             
-             {/* Legs */}
-             <path d="M45 108 L35 180 Q45 185 55 180 L58 108 Z" fill={getMuscleColor('Jambes')} stroke={colors.stroke} strokeWidth="0.5" />
-             <path d="M75 108 L85 180 Q75 185 65 180 L62 108 Z" fill={getMuscleColor('Jambes')} stroke={colors.stroke} strokeWidth="0.5" />
-          </g>
-        </svg>
+        </div>
 
-        {/* Data Tags */}
-        <div className="absolute top-1/3 left-4 flex flex-col items-start animate-in slide-in-from-left duration-1000">
-           <div className="flex items-center gap-2 mb-1">
-             <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_10px_currentColor] ${previewUrl ? 'bg-amber-400 text-amber-400 animate-pulse' : 'bg-cyan-400 text-cyan-400'}`}></div>
-             <span className={`text-[7px] font-black uppercase tracking-widest ${previewUrl ? 'text-amber-200' : 'text-cyan-200'}`}>
-               {previewUrl ? 'Validation...' : 'Scan.Active'}
-             </span>
+        {/* HUD Bas de Carte: Légende */}
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-center gap-4 py-3 px-6 bg-black/30 backdrop-blur-md rounded-2xl border border-white/5 w-fit mx-auto">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
+              <span className="text-[7px] font-black uppercase text-white/40 tracking-widest">Récupéré</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></div>
+              <span className="text-[7px] font-black uppercase text-white/40 tracking-widest">En Récup.</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e]"></div>
+              <span className="text-[7px] font-black uppercase text-white/40 tracking-widest">Fatigue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay de chargement dynamique */}
+      {isGenerating && (
+        <div className="absolute inset-0 z-40 bg-[#070B14]/85 backdrop-blur-lg flex flex-col items-center justify-center p-12 text-center">
+           <div className="relative mb-8">
+              <div className="absolute inset-0 bg-emerald-500/20 blur-3xl animate-pulse"></div>
+              <Loader2 size={56} className="text-emerald-400 animate-spin relative z-10" />
            </div>
-           {!displayUrl && <span className="text-[8px] text-slate-500 max-w-[80px]">Générez votre avatar 3D avec Imagen</span>}
+           <h4 className="text-xl font-black uppercase tracking-tighter mb-3 text-white">Analyse Bio-Anatomique</h4>
+           <div className="space-y-2">
+              <p className="text-[9px] text-emerald-400 font-black uppercase tracking-[0.2em]">Coloration des fibres musculaires...</p>
+              <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed max-w-[200px]">L'IA applique des couleurs bioluminescentes basées sur votre volume d'entraînement récent.</p>
+           </div>
         </div>
-      </div>
-
-      {/* Legend Area */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex justify-center gap-6 z-30">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#34D399] shadow-[0_0_8px_#34D399]"></div>
-          <span className="text-[8px] font-bold uppercase text-slate-300 tracking-widest">Prêt</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#FBBF24] shadow-[0_0_8px_#FBBF24]"></div>
-          <span className="text-[8px] font-bold uppercase text-slate-300 tracking-widest">Récup.</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#FB7185] shadow-[0_0_8px_#FB7185] animate-pulse"></div>
-          <span className="text-[8px] font-bold uppercase text-slate-300 tracking-widest">Fatigue</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

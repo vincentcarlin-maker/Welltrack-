@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { WorkoutProgram, WorkoutBlock, ActivityLog } from '../../types';
-// Fixed missing 'Dumbbell' import
 import { Play, ChevronRight, PenTool, History, Calendar, CheckCircle2, Zap, BrainCircuit, Dumbbell } from 'lucide-react';
 import { ACT_CreerEntrainement } from './ACT_CreerEntrainement';
 import { ACT_SeanceEnCours } from './ACT_SeanceEnCours';
@@ -67,33 +66,32 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
         </div>
       </header>
 
-      {/* Section Récupération */}
+      {/* Section Récupération avec Scan Interactif */}
       <section className="animate-in slide-in-from-bottom duration-700">
         <div className="flex justify-between items-end mb-6 px-2">
           <div>
             <h3 className="font-[900] text-slate-900 text-lg tracking-tight uppercase">État Musculaire</h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">WellTrack Scan 3D</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">WellTrack Scan Bio-Scanner</p>
           </div>
           <div className="text-right">
             <span className={`text-3xl font-[900] ${readiness > 75 ? 'text-emerald-500' : 'text-amber-500'}`}>{readiness}%</span>
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Prêt à l'effort</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Potentiel Récup.</p>
           </div>
         </div>
-        <div className="overflow-hidden rounded-[3rem] border border-slate-200">
-          {/* Mode 'display' ici désactive les boutons de génération */}
-          <RecoveryMuscleMap activities={localActivities} mode="display" />
-        </div>
+        
+        {/* L'image est maintenant interactive ici et reste affichée */}
+        <RecoveryMuscleMap activities={localActivities} interactive={true} />
       </section>
 
       {/* IA Coach Widget */}
-      <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group active:scale-98 transition-all cursor-pointer border border-white/5" onClick={() => programs[0] && handleStartSession(programs[0])}>
+      <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group active:scale-98 transition-all border border-white/5" onClick={() => programs[0] && handleStartSession(programs[0])}>
          <div className="absolute top-0 right-0 w-48 h-48 bg-brand-blue/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
          <div className="flex items-center gap-6 relative z-10">
             <div className="w-16 h-16 bg-brand-blue rounded-3xl flex items-center justify-center shadow-glow animate-pulse-soft flex-shrink-0">
                 <BrainCircuit size={32} className="text-white" />
             </div>
             <div className="flex-1">
-               <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-brand-accent mb-2">WellTrack Pro Coach</h4>
+               <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-brand-accent mb-2">Coach Suggestion</h4>
                <p className="text-lg font-bold leading-tight">
                 {readiness > 80 ? "Condition optimale. C'est le moment de tester une nouvelle charge." : "Focus sur l'endurance et la technique aujourd'hui."}
                </p>
@@ -110,8 +108,8 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
       {/* Liste des programmes */}
       <div className="pb-10">
         <div className="flex justify-between items-center mb-6 px-2">
-            <h3 className="font-[900] text-slate-900 text-xl tracking-tighter uppercase">Mes Entraînements</h3>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{programs.length} Programmes</span>
+            <h3 className="font-[900] text-slate-900 text-xl tracking-tighter uppercase">Programmes</h3>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{programs.length} Unités</span>
         </div>
         <div className="grid grid-cols-1 gap-5">
             {programs.length === 0 ? (
@@ -134,7 +132,7 @@ export const ACT_Musculation: React.FC<ACT_MusculationProps> = ({ programs, user
                            </p>
                         </div>
                     </div>
-                    <div className="p-4 bg-slate-50 rounded-2xl text-slate-300 transition-colors group-hover:text-brand-blue">
+                    <div className="p-4 bg-slate-50 rounded-2xl text-slate-300">
                        <Play fill="currentColor" size={20} />
                     </div>
                 </div>

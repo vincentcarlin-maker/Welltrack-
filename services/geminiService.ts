@@ -29,7 +29,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 2000): Pr
 
 export const analyzeMealImage = async (base64Image: string): Promise<{ name: string; calories: number; macros: { p: number; c: number; f: number } }> => {
   const ai = getAiClient();
-  if (!ai) throw new Error("Clé API manquante dans GitHub Secrets.");
+  if (!ai) throw new Error("Clé API manquante.");
 
   const base64Data = base64Image.split(',')[1] || base64Image;
 
@@ -94,15 +94,25 @@ export const generateWorkoutPlan = async (equipment: string[], type: string): Pr
   });
 };
 
-export const generateAvatarBase = async (): Promise<string | null> => {
+export const generateAvatarBase = async (muscleStatusDescription: string = ""): Promise<string | null> => {
   const ai = getAiClient();
   if (!ai) return null;
+
+  // Prompt ultra-spécifique pour forcer la coloration interne des groupes musculaires par l'IA
+  const prompt = `A professional 3D medical anatomy model of a muscular athletic male body, front view, standing in a neutral pose. 
+  The model is an "Ecorche" style: only superficial red muscle fibers are visible, NO skin, NO internal organs, NO skeletal bones. 
+  Base muscle material is a sleek matte dark obsidian.
+  
+  CRITICAL: The following specific muscle groups must be rendered as HIGHLY VIVID BIOLUMINESCENT NEON colors that fully fill the muscle's volume:
+  ${muscleStatusDescription}
+  
+  High resolution 8k, cinematic studio lighting, deep pitch-black background, sharp anatomical details, hyper-realistic muscle texture.`;
 
   return withRetry(async () => {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
-        parts: [{ text: 'Anatomical body scan, futuristic blue glowing fibers, dark background.' }],
+        parts: [{ text: prompt }],
       },
       config: { imageConfig: { aspectRatio: "9:16" } }
     });
