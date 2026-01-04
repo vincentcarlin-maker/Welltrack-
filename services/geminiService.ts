@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 /**
- * WellTrack Logic Service - Version Gratuite avec gestion de Quota
+ * WellTrack Logic Service - Optimisé pour Gemini 2.5 & 3
  */
 
 const getAiClient = () => {
@@ -94,23 +94,29 @@ export const generateWorkoutPlan = async (equipment: string[], type: string): Pr
   });
 };
 
+/**
+ * GÉNÉRATION D'AVATAR PAR GEMINI 2.5
+ */
 export const generateAvatarBase = async (muscleStatusDescription: string = ""): Promise<string | null> => {
   const ai = getAiClient();
   if (!ai) return null;
 
-  // Prompt ultra-spécifique pour forcer la coloration interne des groupes musculaires par l'IA
-  const prompt = `A professional 3D medical anatomy model of a muscular athletic male body, front view, standing in a neutral pose. 
-  The model is an "Ecorche" style: only superficial red muscle fibers are visible, NO skin, NO internal organs, NO skeletal bones. 
-  Base muscle material is a sleek matte dark obsidian.
+  // Prompt renforcé pour forcer la coloration interne des muscles
+  const prompt = `A cinematic 3D high-fidelity medical anatomy visualization of a muscular male torso and legs. 
+  The figure is shown in "Ecorche" style, meaning the skin is removed to show individual muscle groups.
+  The base material of the muscles is a dark, matte, non-reflective obsidian grey.
   
-  CRITICAL: The following specific muscle groups must be rendered as HIGHLY VIVID BIOLUMINESCENT NEON colors that fully fill the muscle's volume:
+  MANDATORY COLORING INSTRUCTIONS:
+  The following specific muscle groups are NOT grey, they are made of VIVID GLOWING BIOLUMINESCENT material:
   ${muscleStatusDescription}
   
-  High resolution 8k, cinematic studio lighting, deep pitch-black background, sharp anatomical details, hyper-realistic muscle texture.`;
+  Each muscle group mentioned must be COMPLETELY PAINTED in its respective glowing neon color (Red, Orange, or Green). 
+  Deep pitch-black background. Studio dramatic rim lighting. 8k resolution. Ultra-detailed muscle fibers. 
+  The image should look like a high-tech bio-scan from a futuristic laboratory.`;
 
   return withRetry(async () => {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: 'gemini-2.5-flash-image', // Utilisation de Gemini 2.5
       contents: {
         parts: [{ text: prompt }],
       },
