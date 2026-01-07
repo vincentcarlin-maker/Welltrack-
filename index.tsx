@@ -1,15 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
-}
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Ce fichier n'est plus nécessaire car l'application a été transformée en site statique optimisé.
+// Les fonctionnalités interactives sont gérées par JavaScript natif dans index.html.
+console.log("Site Portfolio chargé avec succès.");

@@ -1,93 +1,282 @@
-
 <!DOCTYPE html>
-<html lang="fr" style="background-color: #F8FAFC;">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#F8FAFC" />
-    <title>WellTrack - Elite Health & Performance</title>
-    
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563EB'/%3E%3Cpath d='M32 28H68V40H46V50H64V62H46V80H35V28Z' fill='white'/%3E%3C/svg%3E">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                blue: '#2563EB',
-                dark: '#1E3A8A',
-                light: '#F8FAFC',
-                accent: '#10B981', 
-              },
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Créateur d'Applications Modernes | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              900: '#0F172A',
             },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            boxShadow: {
-              'pro': '0 20px 50px -12px rgba(0,0,0,0.05)',
-              'glow': '0 0 20px rgba(37, 99, 235, 0.3)',
-              'emerald': '0 10px 15px -3px rgba(16, 185, 129, 0.2)'
-            }
+            accent: '#2563EB',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
           },
         },
-      }
-    </script>
-    <style>
-      :root {
-        --safe-top: env(safe-area-inset-top);
-        --safe-bottom: env(safe-area-inset-bottom);
-      }
-      html, body, #root {
-        height: 100%;
-        height: 100dvh;
-        margin: 0;
-        padding: 0;
-        background-color: #F8FAFC !important;
-        overflow: hidden;
-        -webkit-font-smoothing: antialiased;
-        overscroll-behavior: none;
-      }
-      #root {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-      }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      
-      @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-      }
-      .animate-float { animation: float 3s ease-in-out infinite; }
-      
-      @keyframes pulse-soft {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.8; transform: scale(0.98); }
-      }
-      .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
-    </style>
-  <script type="importmap">
+      },
+    }
+  </script>
+  <style>
+    body {
+      scroll-behavior: smooth;
+      background-color: #F8FAFC;
+    }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .project-card:hover .project-overlay {
+      opacity: 1;
+    }
+  </style>
+<script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "recharts": "https://esm.sh/recharts@^3.6.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "react": "https://esm.sh/react@^19.2.3",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "vite": "https://esm.sh/vite@^7.3.0"
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
   }
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+<body class="font-sans text-surface-900">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="text-xl font-bold tracking-tighter">PORTFOLIO<span class="text-accent">.</span></div>
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold uppercase tracking-wider">
+        <a href="#projets" class="hover:text-accent transition-colors">Projets</a>
+        <a href="#expertise" class="hover:text-accent transition-colors">Expertise</a>
+        <a href="#contact" class="px-5 py-2.5 bg-surface-900 text-white rounded-full hover:bg-accent transition-all">Me contacter</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-44 pb-32 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
+        Concevoir des solutions <span class="text-accent">numériques</span> d'exception.
+      </h1>
+      <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+        Développeur indépendant spécialisé dans la création d'applications modernes, intuitives et performantes pour répondre aux défis d'aujourd'hui.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#projets" class="w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform text-center">
+          Découvrir mes projets
+        </a>
+        <a href="#about" class="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition-colors text-center">
+          À propos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- À Propos -->
+  <section id="about" class="py-24 bg-white border-y border-slate-100 px-6 reveal">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <div class="relative">
+        <div class="aspect-square bg-slate-100 rounded-3xl overflow-hidden shadow-2xl">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Bureau de travail" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute -bottom-6 -right-6 bg-accent p-8 rounded-3xl text-white shadow-xl hidden md:block">
+          <div class="text-3xl font-bold">100%</div>
+          <div class="text-xs font-semibold uppercase tracking-widest opacity-80">Sur mesure</div>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-3xl font-bold mb-6">Une approche centrée sur l'utilisateur</h2>
+        <p class="text-slate-500 text-lg leading-relaxed mb-6">
+          Ma passion réside dans la transformation d'idées complexes en interfaces simples et élégantes. En tant que créateur indépendant, j'interviens sur l'intégralité du cycle de vie du produit, de la conception architecturale à l'expérience utilisateur finale.
+        </p>
+        <p class="text-slate-500 text-lg leading-relaxed">
+          Chaque projet est une opportunité d'innover et de proposer des solutions robustes, évolutives et parfaitement adaptées aux besoins de mes partenaires.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Applications (Grid) -->
+  <section id="projets" class="py-24 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-4">Projets récents</h2>
+        <p class="text-slate-500">Une sélection d'applications conçues pour la performance.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Projet 1 -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
+          <div class="h-48 bg-slate-100 p-8 flex items-center justify-center">
+            <svg class="w-16 h-16 text-accent opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <div class="p-8">
+            <h3 class="text-xl font-bold mb-3">WellTrack</h3>
+            <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+              Écosystème complet de suivi de performance athlétique intégrant la gestion de la nutrition et de la récupération.
+            </p>
+            <ul class="space-y-2 mb-8">
+              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Tracking avancé
+              </li>
+              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Analyse de données
+              </li>
+            </ul>
+            <button class="text-accent font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+              Découvrir le projet <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Projet 2 -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
+          <div class="h-48 bg-slate-100 p-8 flex items-center justify-center">
+            <svg class="w-16 h-16 text-accent opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          </div>
+          <div class="p-8">
+            <h3 class="text-xl font-bold mb-3">Propriétaire Plus</h3>
+            <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+              Solution de gestion locative simplifiée permettant de centraliser les communications et les documents administratifs.
+            </p>
+            <ul class="space-y-2 mb-8">
+              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Automatisation
+              </li>
+              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Sécurité cloud
+              </li>
+            </ul>
+            <button class="text-accent font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+              Découvrir le projet <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Projet 3 (Placeholder) -->
+        <div class="bg-white rounded-3xl border border-dashed border-slate-300 overflow-hidden flex flex-col items-center justify-center p-8 text-center min-h-[400px]">
+          <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+          </div>
+          <h3 class="font-bold text-slate-400">Prochain projet</h3>
+          <p class="text-slate-300 text-xs mt-2 uppercase tracking-widest font-bold">En développement</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expertise -->
+  <section id="expertise" class="py-24 bg-surface-900 text-white px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+      <div class="max-w-2xl mb-16">
+        <h2 class="text-3xl font-bold mb-6">Expertise technique & créative</h2>
+        <p class="text-slate-400 text-lg">Je combine savoir-faire technique et vision produit pour créer des applications qui apportent une réelle valeur ajoutée.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="space-y-4">
+          <div class="text-accent text-3xl font-bold">01</div>
+          <h4 class="font-bold">Développement Frontend</h4>
+          <p class="text-sm text-slate-400">Création d'interfaces réactives et fluides utilisant les standards web les plus modernes.</p>
+        </div>
+        <div class="space-y-4">
+          <div class="text-accent text-3xl font-bold">02</div>
+          <h4 class="font-bold">UI/UX Design</h4>
+          <p class="text-sm text-slate-400">Conception de parcours utilisateurs optimisés et d'identités visuelles percutantes.</p>
+        </div>
+        <div class="space-y-4">
+          <div class="text-accent text-3xl font-bold">03</div>
+          <h4 class="font-bold">Architecture Cloud</h4>
+          <p class="text-sm text-slate-400">Déploiement de solutions scalables et sécurisées pour garantir une disponibilité maximale.</p>
+        </div>
+        <div class="space-y-4">
+          <div class="text-accent text-3xl font-bold">04</div>
+          <h4 class="font-bold">Performance & SEO</h4>
+          <p class="text-sm text-slate-400">Optimisation du code pour une rapidité fulgurante et une visibilité accrue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-24 px-6 reveal">
+    <div class="max-w-xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Parlons de votre projet</h2>
+        <p class="text-slate-500">Une idée d'application ? Un besoin spécifique ? Je suis à votre écoute.</p>
+      </div>
+      
+      <form class="space-y-6">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Nom complet</label>
+          <input type="text" placeholder="Jean Dupont" class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Adresse email</label>
+          <input type="email" placeholder="jean@exemple.fr" class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Votre message</label>
+          <textarea rows="5" placeholder="Parlez-moi de votre besoin..." class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors resize-none"></textarea>
+        </div>
+        <button class="w-full py-5 bg-accent text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
+          Envoyer le message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-slate-200 text-center px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-lg font-bold tracking-tighter mb-4">PORTFOLIO<span class="text-accent">.</span></div>
+      <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest">
+        Création d'applications modernes et innovantes © 2024
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Animation au défilement
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 150;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal(); // Appel initial
+  </script>
+</body>
 </html>
