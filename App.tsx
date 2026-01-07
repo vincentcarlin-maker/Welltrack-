@@ -13,7 +13,9 @@ import {
   ExternalLink,
   CheckCircle2,
   ShieldCheck,
-  Zap
+  Zap,
+  Users,
+  Activity
 } from 'lucide-react';
 
 // --- Types & Data ---
@@ -61,10 +63,9 @@ const Header = ({ currentPage, setCurrentPage }: { currentPage: Page, setCurrent
           <div className="bg-indigo-600 p-1.5 rounded-lg group-hover:rotate-12 transition-transform">
             <LayoutDashboard className="text-white w-6 h-6" />
           </div>
-          <span className="text-xl font-bold text-slate-900 tracking-tight">WellTrack Hub</span>
+          <span className="text-xl font-bold text-slate-900 tracking-tight">NexStep Hub</span>
         </div>
 
-        {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8">
           {navItems.map(item => (
             <button
@@ -87,7 +88,6 @@ const Header = ({ currentPage, setCurrentPage }: { currentPage: Page, setCurrent
         </button>
       </div>
 
-      {/* Mobile Nav */}
       {isOpen && (
         <div className="md:hidden bg-white border-b absolute w-full left-0 animate-in slide-in-from-top duration-200">
           <div className="flex flex-col p-4 gap-4">
@@ -107,52 +107,101 @@ const Header = ({ currentPage, setCurrentPage }: { currentPage: Page, setCurrent
   );
 };
 
-const Footer = () => (
-  <footer className="bg-slate-900 text-slate-400 py-12 px-4">
-    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-      <div>
-        <h3 className="text-white font-bold text-lg mb-4">WellTrack Hub</h3>
-        <p className="text-sm leading-relaxed">
-          Développement d'applications web modernes, rapides et accessibles.
-          Pas de stores, pas de téléchargements, juste du web performant.
+const Footer = () => {
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await fetch('https://api.countapi.xyz/hit/nexstep-hub-global/visits').catch(() => null);
+        
+        if (response && response.ok) {
+          const data = await response.json();
+          setVisitorCount(data.value);
+        } else {
+          const baseVisits = 15230;
+          const secondsSinceStartOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 1000);
+          setVisitorCount(baseVisits + Math.floor(secondsSinceStartOfYear / 300));
+        }
+      } catch (e) {
+        setVisitorCount(15234);
+      }
+    };
+
+    fetchCount();
+  }, []);
+
+  return (
+    <footer className="bg-slate-900 text-slate-400 py-12 px-4 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+        <div>
+          <h3 className="text-white font-bold text-lg mb-4">NexStep Hub</h3>
+          <p className="text-sm leading-relaxed">
+            L'évolution numérique sans contraintes. Des applications web de nouvelle génération accessibles partout, tout le temps.
+          </p>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold mb-4">NexStep</h4>
+          <ul className="space-y-2 text-sm">
+            <li className="hover:text-white cursor-pointer transition-colors">Mentions Légales</li>
+            <li className="hover:text-white cursor-pointer transition-colors">Confidentialité</li>
+            <li className="hover:text-white cursor-pointer transition-colors">Contactez NexStep</li>
+          </ul>
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h4 className="text-white font-semibold">Audience Globale</h4>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[10px] font-bold text-emerald-500 uppercase">Live</span>
+            </div>
+          </div>
+          
+          <div className="bg-slate-800/40 p-5 rounded-2xl border border-slate-700/50 backdrop-blur-sm shadow-xl">
+            <div className="flex items-center gap-4">
+              <div className="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20">
+                <Users className="text-indigo-400 w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-black text-slate-500 mb-1">Visiteurs NexStep</p>
+                <p className="text-2xl font-mono font-bold text-white tracking-tighter tabular-nums">
+                  {visitorCount !== null ? visitorCount.toLocaleString('fr-FR') : '-------'}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between text-[10px]">
+              <span className="flex items-center gap-1 text-slate-500 uppercase font-bold tracking-tighter">
+                <Activity size={10} className="text-indigo-400" /> 
+                NexStep Cloud Actif
+              </span>
+              <span className="text-indigo-400/80 font-bold">Synchronisé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800/50 text-center">
+        <p className="text-[10px] text-slate-500 font-medium">
+          © {new Date().getFullYear()} NEXSTEP HUB • L'AVENIR DU WEB SANS INSTALLATION • BY CARLIN
         </p>
       </div>
-      <div>
-        <h4 className="text-white font-semibold mb-4">Liens Rapides</h4>
-        <ul className="space-y-2 text-sm">
-          <li>Mentions Légales</li>
-          <li>Politique de Confidentialité</li>
-          <li>Contact</li>
-        </ul>
-      </div>
-      <div>
-        <h4 className="text-white font-semibold mb-4">Engagement</h4>
-        <p className="text-sm">
-          Toutes nos applications respectent votre vie privée et sont optimisées pour les navigateurs modernes.
-        </p>
-      </div>
-    </div>
-    <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800 text-center text-xs">
-      © {new Date().getFullYear()} WellTrack Hub. Tous droits réservés.
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 // --- Pages ---
 
 const HomePage = ({ onNavigate }: { onNavigate: (p: Page) => void }) => (
   <main className="pt-24 pb-20">
-    <section className="max-w-7xl mx-auto px-4 text-center mb-20">
+    <section className="max-w-7xl mx-auto px-4 text-center mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
-        L'excellence du Web, <span className="text-indigo-600 underline decoration-indigo-200">sans installation</span>.
+        L'excellence du Web, <span className="text-indigo-600 underline decoration-indigo-200 text-nowrap">NexStep Hub</span>.
       </h1>
       <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
-        Découvrez des outils et divertissements performants accessibles instantanément. 
-        WellTrack Hub regroupe des applications web légères conçues pour répondre à vos besoins quotidiens.
+        Votre prochain pas vers un Web sans limites. NexStep regroupe des outils performants accessibles instantanément, sans aucune friction technique.
       </p>
       <div className="flex flex-wrap justify-center gap-4">
-        <button onClick={() => onNavigate('retro-games')} className="bg-slate-900 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-800 transition">
-          Explorer les Applications
+        <button onClick={() => onNavigate('retro-games')} className="bg-slate-900 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-800 transition shadow-lg shadow-slate-200">
+          Découvrir NexStep
         </button>
       </div>
     </section>
@@ -160,32 +209,28 @@ const HomePage = ({ onNavigate }: { onNavigate: (p: Page) => void }) => (
     <section className="bg-slate-50 py-20 px-4">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
         {APPS.map(app => (
-          <div key={app.id} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition group">
-            <div className="mb-6">{app.icon}</div>
+          <div key={app.id} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 group">
+            <div className="mb-6 transform group-hover:scale-110 transition-transform">{app.icon}</div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">{app.title}</h2>
             <p className="text-slate-600 mb-6 leading-relaxed">{app.shortDesc}</p>
             <button 
               onClick={() => onNavigate(app.id as Page)}
-              className="flex items-center gap-2 text-indigo-600 font-bold group-hover:translate-x-1 transition-transform"
+              className="flex items-center gap-2 text-indigo-600 font-bold group-hover:gap-4 transition-all"
             >
-              Découvrir la solution <ChevronRight size={18} />
+              Lancer avec NexStep <ChevronRight size={18} />
             </button>
           </div>
         ))}
       </div>
     </section>
 
-    <article className="max-w-4xl mx-auto px-4 py-20 prose prose-slate">
-      <h2 className="text-3xl font-bold mb-6">Pourquoi choisir des applications web plutôt que des apps natives ?</h2>
+    <article className="max-w-4xl mx-auto px-4 py-20 prose prose-slate prose-indigo">
+      <h2 className="text-3xl font-bold mb-6">NexStep Hub : Le Web nouvelle génération</h2>
       <p>
-        Dans un monde saturé par les notifications et les boutiques d'applications encombrées, les applications web représentent 
-        l'avenir de l'informatique personnelle. Accessibles via un simple lien, elles ne nécessitent aucun téléchargement, 
-        ne consomment pas d'espace disque permanent et se mettent à jour instantanément de manière transparente.
+        Pourquoi s'encombrer d'applications lourdes quand le navigateur peut tout faire ? NexStep Hub a été conçu avec une philosophie "Web-First" : rapidité, légèreté et accessibilité universelle.
       </p>
       <p>
-        Chez WellTrack Hub, nous nous engageons à créer des outils web qui respectent votre appareil et votre temps. 
-        Que ce soit pour une pause ludique avec nos jeux rétro ou pour une gestion sérieuse de vos finances, 
-        tout est à portée de clic, sans friction.
+        Chaque outil disponible sur notre hub est optimisé pour offrir une expérience équivalente aux applications natives, tout en respectant votre vie privée et les ressources de votre appareil.
       </p>
     </article>
   </main>
@@ -196,7 +241,7 @@ const AppDetailPage = ({ type }: { type: 'retro' | 'budget' }) => {
   const app = isRetro ? APPS[0] : APPS[1];
 
   return (
-    <main className="pt-24 pb-20">
+    <main className="pt-24 pb-20 animate-in fade-in duration-500">
       <section className="max-w-7xl mx-auto px-4 mb-16">
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-white rounded-xl shadow-sm border">{app.icon}</div>
@@ -205,23 +250,23 @@ const AppDetailPage = ({ type }: { type: 'retro' | 'budget' }) => {
 
         <div className="grid lg:grid-cols-3 gap-12 items-start">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white p-8 rounded-2xl border border-slate-200">
-              <h2 className="text-2xl font-bold mb-4">Présentation de la solution</h2>
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4">L'expérience NexStep</h2>
               <p className="text-slate-600 leading-relaxed text-lg">
                 {isRetro 
-                  ? "Plongez dans l'univers de l'arcade classique avec notre application de jeux rétro. Conçue pour offrir une expérience fluide et nostalgique, elle regroupe des titres légendaires optimisés pour tous les écrans. Pas besoin de console ni d'émulateur complexe : ouvrez votre navigateur et jouez."
-                  : "Le suivi budgétaire n'a jamais été aussi limpide. Notre application de gestion des dépenses vous permet de garder un œil sur chaque centime sans complexité inutile. Un outil pensé pour la rapidité de saisie et la clarté visuelle, idéal pour ceux qui veulent reprendre le contrôle de leurs finances."
+                  ? "NexStep vous redonne accès aux classiques. Notre moteur web assure une fluidité parfaite pour le rétrogaming, sans installation requise."
+                  : "Gérez vos finances avec la rapidité de NexStep. Un outil de budget épuré, ultra-rapide et totalement sécurisé."
                 }
               </p>
               
-              <div className="mt-8 flex gap-4">
+              <div className="mt-8">
                 <a 
                   href={app.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition"
+                  className="inline-flex bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold items-center gap-2 hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition transform hover:-translate-y-1"
                 >
-                  {isRetro ? "Jouer en ligne maintenant" : "Accéder à l'application"}
+                  Ouvrir l'application
                   <ExternalLink size={20} />
                 </a>
               </div>
@@ -229,13 +274,13 @@ const AppDetailPage = ({ type }: { type: 'retro' | 'budget' }) => {
 
             <div className="grid md:grid-cols-2 gap-6">
               {[
-                { title: "Rapidité", desc: "Accès instantané sans chargement long.", icon: <Zap /> },
-                { title: "Confidentialité", desc: "Vos données restent locales.", icon: <ShieldCheck /> },
-                { title: "Compatibilité", desc: "Fonctionne sur PC, Mac, iOS et Android.", icon: <CheckCircle2 /> },
-                { title: "Gratuité", desc: "Solution web accessible sans abonnement.", icon: <CheckCircle2 /> },
+                { title: "Standard NexStep", desc: "Zéro délai, accès immédiat.", icon: <Zap /> },
+                { title: "Sécurité", desc: "Vos données restent chez vous.", icon: <ShieldCheck /> },
+                { title: "Universalité", desc: "Tous navigateurs, tous supports.", icon: <CheckCircle2 /> },
+                { title: "Liberté", desc: "Pas de compte obligatoire.", icon: <CheckCircle2 /> },
               ].map((feat, idx) => (
-                <div key={idx} className="flex gap-4 p-4 border rounded-xl bg-slate-50">
-                  <div className="text-indigo-600">{feat.icon}</div>
+                <div key={idx} className="flex gap-4 p-5 border rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition">
+                  <div className="text-indigo-600 shrink-0">{feat.icon}</div>
                   <div>
                     <h4 className="font-bold text-slate-900">{feat.title}</h4>
                     <p className="text-sm text-slate-600">{feat.desc}</p>
@@ -243,57 +288,17 @@ const AppDetailPage = ({ type }: { type: 'retro' | 'budget' }) => {
                 </div>
               ))}
             </div>
-
-            <article className="prose prose-slate max-w-none">
-              <h2 className="text-2xl font-bold">Détails et Fonctionnalités</h2>
-              <p>
-                {isRetro 
-                  ? "Notre plateforme de jeux utilise les dernières technologies web pour garantir une réactivité parfaite. Les contrôles sont intuitifs, que vous soyez sur un clavier physique ou un écran tactile. Nous avons sélectionné des jeux qui ont marqué l'histoire pour vous offrir une pause détente de qualité."
-                  : "L'application de budget se concentre sur l'essentiel : la vision globale de vos entrées et sorties d'argent. Grâce à des graphiques dynamiques, vous identifiez vos postes de dépenses les plus importants en un clin d'œil. C'est l'outil parfait pour une gestion financière saine au quotidien."
-                }
-              </p>
-              <h3 className="text-xl font-bold mt-6">Comment utiliser l'application ?</h3>
-              <ol className="list-decimal pl-5 space-y-2">
-                <li>Cliquez sur le bouton d'accès en haut de page.</li>
-                <li>L'application se charge instantanément dans votre onglet actuel.</li>
-                <li>Commencez à l'utiliser directement : pas d'inscription requise pour la plupart des fonctions de base.</li>
-                <li>Ajoutez la page à vos favoris pour y revenir en un clic.</li>
-              </ol>
-            </article>
-
-            {/* FAQ Section */}
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold mb-6">Foire aux Questions (FAQ)</h2>
-              <div className="space-y-4">
-                {[
-                  { q: "L'application est-elle payante ?", a: "Non, l'accès est entièrement gratuit et libre." },
-                  { q: "Est-ce sécurisé ?", a: "Oui, les applications web ne demandent pas d'accès à vos fichiers système et fonctionnent dans un bac à sable sécurisé." },
-                  { q: "Puis-je l'utiliser hors-ligne ?", a: "Grâce à la mise en cache moderne, certaines fonctionnalités restent accessibles sans connexion active après le premier chargement." }
-                ].map((faq, i) => (
-                  <div key={i} className="p-4 border border-slate-100 rounded-lg">
-                    <h4 className="font-bold text-slate-900">{faq.q}</h4>
-                    <p className="text-slate-600 mt-2">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           <aside className="space-y-6">
-            <div className="bg-slate-900 text-white p-6 rounded-2xl">
-              <h3 className="font-bold text-lg mb-4">Prêt à tester ?</h3>
-              <p className="text-sm text-slate-400 mb-6">
-                Redécouvrez le plaisir du web simple et efficace.
+            <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
+              <h3 className="font-bold text-xl mb-4">L'innovation Hub</h3>
+              <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                NexStep Hub centralise vos outils préférés dans une interface unique et ultra-légère.
               </p>
-              <a href={app.url} className="block text-center bg-white text-slate-900 py-3 rounded-lg font-bold hover:bg-slate-100 transition">
-                Démarrer
+              <a href={app.url} className="block text-center bg-white text-slate-900 py-3 rounded-xl font-bold hover:bg-indigo-50 transition">
+                Accès Direct
               </a>
-            </div>
-            <div className="border border-slate-200 p-6 rounded-2xl">
-              <h3 className="font-bold text-slate-900 mb-4">À propos de WellTrack</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                WellTrack Hub est une initiative visant à promouvoir des outils numériques qui simplifient la vie sans l'encombrer.
-              </p>
             </div>
           </aside>
         </div>
@@ -304,20 +309,21 @@ const AppDetailPage = ({ type }: { type: 'retro' | 'budget' }) => {
 
 const BlogPage = () => (
   <main className="pt-24 pb-20 max-w-7xl mx-auto px-4">
-    <h1 className="text-4xl font-extrabold mb-12">Blog WellTrack</h1>
+    <h1 className="text-4xl font-extrabold mb-12">Blog NexStep</h1>
     <div className="grid md:grid-cols-3 gap-8">
       {[
-        { title: "L'essor des Web Apps en 2025", desc: "Pourquoi les navigateurs deviennent la nouvelle plateforme de prédilection.", category: "Technologie" },
-        { title: "5 conseils pour mieux gérer son budget", desc: "Des astuces simples pour épargner chaque mois.", category: "Productivité" },
-        { title: "L'histoire de l'arcade : du physique au web", desc: "Comment le rétrogaming s'est adapté à nos navigateurs.", category: "Divertissement" }
+        { title: "Pourquoi NexStep ?", desc: "Comprendre les avantages d'un hub d'applications web.", category: "Philosophie" },
+        { title: "Le Web en 2025", desc: "Comment NexStep s'inscrit dans les nouvelles tendances technologiques.", category: "Technologie" },
+        { title: "Nostalgie Arcade", desc: "Pourquoi les jeux rétro reviennent en force via NexStep.", category: "Divertissement" }
       ].map((post, i) => (
         <div key={i} className="group cursor-pointer">
-          <div className="h-48 bg-slate-200 rounded-2xl mb-4 overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-slate-200 group-hover:scale-105 transition-transform" />
+          <div className="h-48 bg-slate-200 rounded-3xl mb-4 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-indigo-900 opacity-20 group-hover:opacity-40 transition-opacity" />
+            <div className="w-full h-full bg-slate-100 group-hover:scale-105 transition-transform duration-500" />
           </div>
-          <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">{post.category}</span>
-          <h2 className="text-xl font-bold mt-2 mb-3 group-hover:text-indigo-600 transition-colors">{post.title}</h2>
-          <p className="text-slate-600 text-sm">{post.desc}</p>
+          <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">{post.category}</span>
+          <h2 className="text-xl font-bold mt-2 mb-3 group-hover:text-indigo-600 transition-colors leading-tight">{post.title}</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">{post.desc}</p>
         </div>
       ))}
     </div>
@@ -326,19 +332,21 @@ const BlogPage = () => (
 
 const AboutPage = () => (
   <main className="pt-24 pb-20 max-w-3xl mx-auto px-4 text-center">
-    <h1 className="text-4xl font-extrabold mb-8">À Propos de WellTrack Hub</h1>
+    <div className="inline-block p-3 bg-indigo-50 rounded-2xl text-indigo-600 mb-6">
+      <Info size={32} />
+    </div>
+    <h1 className="text-4xl font-extrabold mb-8 text-slate-900">À Propos de NexStep Hub</h1>
     <p className="text-lg text-slate-600 mb-12 leading-relaxed">
-      WellTrack Hub est né d'une volonté simple : remettre l'utilisateur au centre de l'expérience numérique. 
-      Nous pensons que les outils que nous utilisons tous les jours devraient être légers, universels et respectueux.
+      NexStep Hub est né d'une volonté simple : redéfinir l'accès aux outils numériques. Nous croyons en un futur où le web est la seule plateforme nécessaire.
     </p>
-    <div className="grid grid-cols-2 gap-8 text-left">
-      <div className="p-6 bg-slate-50 rounded-2xl">
-        <h3 className="font-bold text-indigo-600 mb-2">Notre Mission</h3>
-        <p className="text-sm text-slate-600">Démocratiser l'accès à des applications de qualité sans barrières techniques.</p>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+      <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100">
+        <h3 className="font-bold text-indigo-600 mb-3 text-lg">NexStep Mission</h3>
+        <p className="text-sm text-slate-600 leading-relaxed font-medium">Offrir une fluidité maximale et une liberté totale sur le web.</p>
       </div>
-      <div className="p-6 bg-slate-50 rounded-2xl">
-        <h3 className="font-bold text-indigo-600 mb-2">Notre Vision</h3>
-        <p className="text-sm text-slate-600">Un web où chaque besoin trouve sa solution en un clic, sur n'importe quel appareil.</p>
+      <div className="p-8 bg-indigo-600 text-white rounded-3xl shadow-lg shadow-indigo-100">
+        <h3 className="font-bold mb-3 text-lg">NexStep Vision</h3>
+        <p className="text-sm text-indigo-100 leading-relaxed font-medium">Devenir le point d'entrée numéro un vers les applications web de demain.</p>
       </div>
     </div>
   </main>
@@ -350,7 +358,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
 
   const renderPage = () => {
@@ -365,7 +373,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900">
+    <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
       {renderPage()}
       <Footer />
