@@ -1,9 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellTrack Hub - Les Meilleures Applications Web sans Installation</title>
+    <meta name="description" content="Découvrez WellTrack Hub : votre portail d'applications web gratuites et performantes. Jeux rétro, gestion de budget et outils pratiques accessibles sur navigateur.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="WellTrack Hub - Applications Web Gratuites">
+    <meta property="og:description" content="Des outils simples et efficaces accessibles sans téléchargement. Jeux rétro et suivi de budget en ligne.">
+    <meta property="og:type" content="website">
+    
+    <!-- Tailwind CSS via CDN for rapid development with world-class design -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "WellTrack Hub",
+      "operatingSystem": "All",
+      "applicationCategory": "Utilities",
+      "description": "Portail d'applications web sans installation regroupant jeux rétro et gestionnaire de budget."
+    }
+    </script>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+      
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
 <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
   }
 }
 </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

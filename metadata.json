@@ -1,7 +1,5 @@
 {
-  "requestFramePermissions": [
-    "camera"
-  ],
   "name": "WellTrack Hub",
-  "description": ""
+  "description": "Portail SEO d'applications web performantes et accessibles immédiatement sans installation.",
+  "requestFramePermissions": []
 }
