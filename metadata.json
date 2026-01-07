@@ -1,7 +1,7 @@
 {
-  "name": "WellTrack Hub",
-  "description": "Plateforme web d'applications de santé et performance. Accédez à vos outils de sport et nutrition sans installation via les marketplaces.",
   "requestFramePermissions": [
     "camera"
-  ]
+  ],
+  "name": "WellTrack Hub",
+  "description": ""
 }

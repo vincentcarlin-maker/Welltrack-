@@ -1,19 +1,20 @@
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-# Fitrack 🏋️‍♂️🥗⚡
+# Run and deploy your AI Studio app
 
-Fitrack est l'écosystème ultime de suivi de performance athlétique. Pensé pour les athlètes exigeants, Fitrack combine musculation de haute précision, nutrition optimisée et récupération pilotée par les données.
+This contains everything you need to run your app locally.
 
-## Fonctionnalités Clés
+View your app in AI Studio: https://ai.studio/apps/drive/1Hm6-oALeM7nqfOGubFQqd6TbqJC40sIA
 
-*   **Fit Dashboard** : Visualisez vos pas, calories et séries de victoires avec une interface haute performance.
-*   **Muscu Pro** : Tracking avancé des séances avec calcul du volume (tonnage) et RPE.
-*   **Coach Fitrack** : Recommandations quotidiennes basées sur vos statistiques réelles.
-*   **Scan Nutrition** : Analyse visuelle des repas pour un suivi sans friction.
-*   **Récupération** : Cartographie musculaire intelligente indiquant votre état de fatigue.
+## Run Locally
 
-## Technologies
+**Prerequisites:**  Node.js
 
-*   React 19 / Vite
-*   Tailwind CSS (Elite Style)
-*   Lucide Icons
-*   Recharts (Performance Tracking)
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
