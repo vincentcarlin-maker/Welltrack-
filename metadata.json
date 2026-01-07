@@ -1,6 +1,6 @@
 {
-  "name": "WellTrack",
-  "description": "L'écosystème ultime de santé et de performance : Musculation, Nutrition et Récupération pilotés par l'IA.",
+  "name": "WellTrack Hub",
+  "description": "Plateforme web d'applications de santé et performance. Accédez à vos outils de sport et nutrition sans installation via les marketplaces.",
   "requestFramePermissions": [
     "camera"
   ]

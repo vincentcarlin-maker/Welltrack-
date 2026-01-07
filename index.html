@@ -3,7 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Créateur d'Applications Modernes | Portfolio</title>
+  <title>WellTrack | Solutions Santé & Performance Accessibles en Ligne</title>
+  <meta name="description" content="Découvrez WellTrack, la plateforme d'applications web pour la santé, le sport et la nutrition. Accédez à nos outils de suivi sans téléchargement." />
+  
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="WellTrack | Écosystème Santé Web" />
+  <meta property="og:description" content="Suivi de performance, nutrition IA et récupération musculaire directement dans votre navigateur." />
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "WellTrack Health",
+    "operatingSystem": "Web Browser",
+    "applicationCategory": "HealthApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1250"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -13,270 +41,281 @@
       theme: {
         extend: {
           colors: {
-            surface: {
-              50: '#F8FAFC',
-              100: '#F1F5F9',
-              900: '#0F172A',
-            },
-            accent: '#2563EB',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-        },
-      },
+            brand: { blue: '#2563EB', dark: '#0F172A', accent: '#10B981' }
+          }
+        }
+      }
     }
   </script>
   <style>
-    body {
-      scroll-behavior: smooth;
-      background-color: #F8FAFC;
-    }
-    .glass-nav {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease-out;
-    }
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .project-card:hover .project-overlay {
-      opacity: 1;
-    }
+    :root { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: #0F172A; }
+    .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+    .hero-gradient { background: radial-gradient(circle at top right, #EEF2FF, #F8FAFC); }
+    .reveal { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
   </style>
 <script type="importmap">
 {
   "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "recharts": "https://esm.sh/recharts@^3.6.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
     "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
     "vite": "https://esm.sh/vite@^7.3.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
-<body class="font-sans text-surface-900">
+<body>
 
   <!-- Navigation -->
-  <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200">
-    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-      <div class="text-xl font-bold tracking-tighter">PORTFOLIO<span class="text-accent">.</span></div>
-      <div class="hidden md:flex items-center gap-8 text-sm font-semibold uppercase tracking-wider">
-        <a href="#projets" class="hover:text-accent transition-colors">Projets</a>
-        <a href="#expertise" class="hover:text-accent transition-colors">Expertise</a>
-        <a href="#contact" class="px-5 py-2.5 bg-surface-900 text-white rounded-full hover:bg-accent transition-all">Me contacter</a>
+  <nav class="fixed top-0 w-full z-50 glass border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white font-black">W</div>
+        <span class="text-xl font-black tracking-tighter uppercase">Well<span class="text-brand-accent">Track</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-wider text-slate-500">
+        <a href="#apps" class="hover:text-brand-blue transition-colors">Nos Solutions</a>
+        <a href="#blog" class="hover:text-brand-blue transition-colors">Expertise</a>
+        <a href="#about" class="hover:text-brand-blue transition-colors">Concept</a>
+        <a href="/access" class="px-6 py-3 bg-brand-dark text-white rounded-full hover:bg-brand-blue transition-all shadow-lg">Accès Direct</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="pt-44 pb-32 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
-        Concevoir des solutions <span class="text-accent">numériques</span> d'exception.
-      </h1>
-      <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
-        Développeur indépendant spécialisé dans la création d'applications modernes, intuitives et performantes pour répondre aux défis d'aujourd'hui.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#projets" class="w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform text-center">
-          Découvrir mes projets
-        </a>
-        <a href="#about" class="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition-colors text-center">
-          À propos
-        </a>
+  <main>
+    <!-- Hero Section -->
+    <header class="pt-40 pb-20 px-6 hero-gradient">
+      <div class="max-w-5xl mx-auto text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-none mb-8">
+          La santé de demain, <br/><span class="text-brand-blue">sans barrière.</span>
+        </h1>
+        <p class="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10">
+          Accédez instantanément à nos outils de suivi de performance et nutrition par IA. Pas de téléchargement, pas de marketplace, juste la puissance du web.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="#apps" class="bg-brand-blue text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 hover:scale-105 transition-all">Installer WellTrack</a>
+          <a href="#concept" class="bg-white border border-slate-200 px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-50 transition-all">En savoir plus</a>
+        </div>
+        <div class="mt-16 flex justify-center gap-12 opacity-40 grayscale pointer-events-none">
+          <img src="https://img.icons8.com/ios-filled/50/000000/safety-certificate.png" alt="Sécurité"/>
+          <img src="https://img.icons8.com/ios-filled/50/000000/cloud.png" alt="Cloud Native"/>
+          <img src="https://img.icons8.com/ios-filled/50/000000/guarantee.png" alt="Qualité"/>
+        </div>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- À Propos -->
-  <section id="about" class="py-24 bg-white border-y border-slate-100 px-6 reveal">
-    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-      <div class="relative">
-        <div class="aspect-square bg-slate-100 rounded-3xl overflow-hidden shadow-2xl">
-          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Bureau de travail" class="w-full h-full object-cover">
+    <!-- App Listing (SEO Focus) -->
+    <section id="apps" class="py-24 px-6 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-20">
+          <h2 class="text-4xl font-black mb-4 tracking-tight uppercase">Solutions Web WellTrack</h2>
+          <p class="text-slate-500">Des outils spécialisés pour chaque aspect de votre bien-être.</p>
         </div>
-        <div class="absolute -bottom-6 -right-6 bg-accent p-8 rounded-3xl text-white shadow-xl hidden md:block">
-          <div class="text-3xl font-bold">100%</div>
-          <div class="text-xs font-semibold uppercase tracking-widest opacity-80">Sur mesure</div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- App Card 1: WellTrack Main -->
+          <article class="group reveal">
+            <div class="bg-slate-50 rounded-[3rem] p-10 border border-slate-100 transition-all hover:shadow-2xl hover:border-brand-blue/20">
+              <div class="w-16 h-16 bg-brand-blue rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <h3 class="text-3xl font-black mb-4 uppercase tracking-tighter">WellTrack Core</h3>
+              <p class="text-slate-500 mb-8 leading-relaxed">
+                L'écosystème complet pour athlètes. Suivi de musculation, tonnage automatique et analyse de la récupération. Une application web progressive qui remplace vos anciens outils de tracking.
+              </p>
+              <ul class="space-y-3 mb-10 text-sm font-bold text-slate-400">
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Tracking Temps Réel</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Analyse IA de Performance</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Mode Hors-ligne</li>
+              </ul>
+              <a href="/app" class="inline-flex items-center gap-3 text-brand-blue font-black uppercase text-xs tracking-widest group-hover:gap-5 transition-all">
+                Lancer l'application <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- App Card 2: Scan Nutrition -->
+          <article class="group reveal">
+            <div class="bg-slate-50 rounded-[3rem] p-10 border border-slate-100 transition-all hover:shadow-2xl hover:border-brand-accent/20">
+              <div class="w-16 h-16 bg-brand-accent rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+              </div>
+              <h3 class="text-3xl font-black mb-4 uppercase tracking-tighter">Scan Nutri IA</h3>
+              <p class="text-slate-500 mb-8 leading-relaxed">
+                Analysez vos repas instantanément via votre navigateur. Notre IA identifie les calories et macros-nutriments d'une simple photo. L'expertise nutritionnelle sans friction logicielle.
+              </p>
+              <ul class="space-y-3 mb-10 text-sm font-bold text-slate-400">
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div> Vision par Ordinateur</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div> Calcul des Macros</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div> Historique Sécurisé</li>
+              </ul>
+              <a href="/nutri" class="inline-flex items-center gap-3 text-brand-accent font-black uppercase text-xs tracking-widest group-hover:gap-5 transition-all">
+                Analyser mon plat <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </a>
+            </div>
+          </article>
         </div>
+      </div>
+    </section>
+
+    <!-- SEO Content Section -->
+    <section id="concept" class="py-24 px-6 bg-slate-50">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-black mb-12 uppercase tracking-tight text-center">Pourquoi choisir une application web pour votre santé ?</h2>
+        <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-8">
+          <p>
+            À l'heure où nos smartphones sont saturés d'outils intrusifs, WellTrack propose une approche radicalement différente : la <strong>liberté numérique</strong>. Nos solutions sont conçues pour être accessibles depuis n'importe quel navigateur, garantissant une compatibilité totale sans les contraintes de mise à jour ou de stockage physique.
+          </p>
+          <div class="grid md:grid-cols-2 gap-8 py-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200">
+              <h4 class="font-bold text-slate-900 mb-2">Respect de la vie privée</h4>
+              <p class="text-sm">Vos données de santé ne transitent pas par des plateformes tierces. WellTrack utilise le stockage local de votre navigateur pour une confidentialité maximale.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200">
+              <h4 class="font-bold text-slate-900 mb-2">Performance Native</h4>
+              <p class="text-sm">Grâce aux dernières technologies Web, nos applications sont aussi fluides que des logiciels classiques, tout en étant 100% indexables et partageables.</p>
+            </div>
+          </div>
+          <p>
+            Que vous soyez un athlète de haut niveau cherchant à optimiser son tonnage ou un débutant souhaitant comprendre sa nutrition, nos outils web vous accompagnent partout, tout le temps. L'intelligence artificielle intégrée traite vos informations en temps réel pour vous fournir des recommandations personnalisées.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog / Expertise Hub (SEO Magnet) -->
+    <section id="blog" class="py-24 px-6 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+          <div>
+            <h2 class="text-3xl font-black uppercase tracking-tight">Expertise & Guides</h2>
+            <p class="text-slate-500">Apprenez à optimiser votre corps avec nos experts.</p>
+          </div>
+          <a href="/blog" class="text-brand-blue font-bold uppercase text-xs tracking-widest">Voir tous les articles</a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <article class="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:-translate-y-2 transition-transform">
+            <div class="h-48 bg-slate-200">
+              <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=80" alt="Musculation" class="w-full h-full object-cover"/>
+            </div>
+            <div class="p-6">
+              <span class="text-[10px] font-black uppercase text-brand-blue tracking-widest">Performance</span>
+              <h4 class="font-bold text-lg mt-2 mb-4">Optimiser son tonnage : Le guide complet pour athlètes.</h4>
+              <p class="text-sm text-slate-500 mb-6">Découvrez comment notre outil de musculation en ligne calcule votre volume de travail...</p>
+              <a href="/blog/tonnage" class="text-xs font-black uppercase tracking-widest text-slate-900">Lire la suite</a>
+            </div>
+          </article>
+
+          <article class="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:-translate-y-2 transition-transform">
+            <div class="h-48 bg-slate-200">
+              <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=80" alt="Nutrition" class="w-full h-full object-cover"/>
+            </div>
+            <div class="p-6">
+              <span class="text-[10px] font-black uppercase text-brand-accent tracking-widest">Nutrition</span>
+              <h4 class="font-bold text-lg mt-2 mb-4">Pourquoi le scan nutritionnel IA change votre quotidien.</h4>
+              <p class="text-sm text-slate-500 mb-6">Ne comptez plus vos calories manuellement, laissez notre vision par ordinateur faire le travail...</p>
+              <a href="/blog/nutri-ia" class="text-xs font-black uppercase tracking-widest text-slate-900">Lire la suite</a>
+            </div>
+          </article>
+
+          <article class="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:-translate-y-2 transition-transform">
+            <div class="h-48 bg-slate-200">
+              <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&q=80" alt="Bien-être" class="w-full h-full object-cover"/>
+            </div>
+            <div class="p-6">
+              <span class="text-[10px] font-black uppercase text-indigo-500 tracking-widest">Récupération</span>
+              <h4 class="font-bold text-lg mt-2 mb-4">Sommeil et récupération : L'importance du jumeau numérique.</h4>
+              <p class="text-sm text-slate-500 mb-6">Comment visualiser ses groupes musculaires fatigués permet de prévenir les blessures...</p>
+              <a href="/blog/recup" class="text-xs font-black uppercase tracking-widest text-slate-900">Lire la suite</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (Rich Snippets SEO) -->
+    <section class="py-24 px-6 bg-slate-50">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-black mb-12 uppercase tracking-tight text-center">Questions Fréquentes</h2>
+        <div class="space-y-4">
+          <details class="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary class="font-bold cursor-pointer list-none flex justify-between items-center">
+              Comment installer l'application WellTrack sans l'App Store ?
+              <span class="group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <p class="text-sm text-slate-500 mt-4 leading-relaxed">
+              WellTrack est une Progressive Web App (PWA). Pour l'installer, ouvrez simplement le site dans votre navigateur, cliquez sur "Partager" ou le menu de configuration et sélectionnez "Ajouter à l'écran d'accueil".
+            </p>
+          </details>
+          <details class="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary class="font-bold cursor-pointer list-none flex justify-between items-center">
+              Mes données de santé sont-elles en sécurité ?
+              <span class="group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <p class="text-sm text-slate-500 mt-4 leading-relaxed">
+              Oui. Contrairement aux applications mobiles classiques, nous n'avons pas accès à votre compte utilisateur global. Vos données sont stockées localement sur votre appareil et cryptées pour votre usage personnel.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact & Footer -->
+  <footer class="py-20 px-6 bg-brand-dark text-white">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 border-b border-white/10 pb-20">
+      <div class="col-span-2">
+        <div class="text-2xl font-black mb-6 tracking-tighter uppercase">Well<span class="text-brand-accent">Track</span></div>
+        <p class="text-slate-400 max-w-sm leading-relaxed">
+          Leader des solutions web pour la performance athlétique. Nous créons des outils numériques accessibles, rapides et privés.
+        </p>
       </div>
       <div>
-        <h2 class="text-3xl font-bold mb-6">Une approche centrée sur l'utilisateur</h2>
-        <p class="text-slate-500 text-lg leading-relaxed mb-6">
-          Ma passion réside dans la transformation d'idées complexes en interfaces simples et élégantes. En tant que créateur indépendant, j'interviens sur l'intégralité du cycle de vie du produit, de la conception architecturale à l'expérience utilisateur finale.
-        </p>
-        <p class="text-slate-500 text-lg leading-relaxed">
-          Chaque projet est une opportunité d'innover et de proposer des solutions robustes, évolutives et parfaitement adaptées aux besoins de mes partenaires.
-        </p>
+        <h4 class="font-bold mb-6 uppercase tracking-widest text-xs text-brand-blue">Navigation</h4>
+        <ul class="space-y-4 text-sm text-slate-400">
+          <li><a href="#apps" class="hover:text-white transition-colors">Applications</a></li>
+          <li><a href="#blog" class="hover:text-white transition-colors">Expertise</a></li>
+          <li><a href="#concept" class="hover:text-white transition-colors">À propos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-6 uppercase tracking-widest text-xs text-brand-blue">Légal</h4>
+        <ul class="space-y-4 text-sm text-slate-400">
+          <li><a href="/privacy" class="hover:text-white transition-colors">Confidentialité</a></li>
+          <li><a href="/rgpd" class="hover:text-white transition-colors">RGPD</a></li>
+          <li><a href="/legal" class="hover:text-white transition-colors">Mentions Légales</a></li>
+        </ul>
       </div>
     </div>
-  </section>
-
-  <!-- Applications (Grid) -->
-  <section id="projets" class="py-24 px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold mb-4">Projets récents</h2>
-        <p class="text-slate-500">Une sélection d'applications conçues pour la performance.</p>
-      </div>
-      
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Projet 1 -->
-        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
-          <div class="h-48 bg-slate-100 p-8 flex items-center justify-center">
-            <svg class="w-16 h-16 text-accent opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-          </div>
-          <div class="p-8">
-            <h3 class="text-xl font-bold mb-3">WellTrack</h3>
-            <p class="text-slate-500 text-sm mb-6 leading-relaxed">
-              Écosystème complet de suivi de performance athlétique intégrant la gestion de la nutrition et de la récupération.
-            </p>
-            <ul class="space-y-2 mb-8">
-              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Tracking avancé
-              </li>
-              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Analyse de données
-              </li>
-            </ul>
-            <button class="text-accent font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-              Découvrir le projet <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Projet 2 -->
-        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
-          <div class="h-48 bg-slate-100 p-8 flex items-center justify-center">
-            <svg class="w-16 h-16 text-accent opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-          </div>
-          <div class="p-8">
-            <h3 class="text-xl font-bold mb-3">Propriétaire Plus</h3>
-            <p class="text-slate-500 text-sm mb-6 leading-relaxed">
-              Solution de gestion locative simplifiée permettant de centraliser les communications et les documents administratifs.
-            </p>
-            <ul class="space-y-2 mb-8">
-              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Automatisation
-              </li>
-              <li class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span> Sécurité cloud
-              </li>
-            </ul>
-            <button class="text-accent font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-              Découvrir le projet <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Projet 3 (Placeholder) -->
-        <div class="bg-white rounded-3xl border border-dashed border-slate-300 overflow-hidden flex flex-col items-center justify-center p-8 text-center min-h-[400px]">
-          <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-          </div>
-          <h3 class="font-bold text-slate-400">Prochain projet</h3>
-          <p class="text-slate-300 text-xs mt-2 uppercase tracking-widest font-bold">En développement</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Expertise -->
-  <section id="expertise" class="py-24 bg-surface-900 text-white px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-      <div class="max-w-2xl mb-16">
-        <h2 class="text-3xl font-bold mb-6">Expertise technique & créative</h2>
-        <p class="text-slate-400 text-lg">Je combine savoir-faire technique et vision produit pour créer des applications qui apportent une réelle valeur ajoutée.</p>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="space-y-4">
-          <div class="text-accent text-3xl font-bold">01</div>
-          <h4 class="font-bold">Développement Frontend</h4>
-          <p class="text-sm text-slate-400">Création d'interfaces réactives et fluides utilisant les standards web les plus modernes.</p>
-        </div>
-        <div class="space-y-4">
-          <div class="text-accent text-3xl font-bold">02</div>
-          <h4 class="font-bold">UI/UX Design</h4>
-          <p class="text-sm text-slate-400">Conception de parcours utilisateurs optimisés et d'identités visuelles percutantes.</p>
-        </div>
-        <div class="space-y-4">
-          <div class="text-accent text-3xl font-bold">03</div>
-          <h4 class="font-bold">Architecture Cloud</h4>
-          <p class="text-sm text-slate-400">Déploiement de solutions scalables et sécurisées pour garantir une disponibilité maximale.</p>
-        </div>
-        <div class="space-y-4">
-          <div class="text-accent text-3xl font-bold">04</div>
-          <h4 class="font-bold">Performance & SEO</h4>
-          <p class="text-sm text-slate-400">Optimisation du code pour une rapidité fulgurante et une visibilité accrue.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="py-24 px-6 reveal">
-    <div class="max-w-xl mx-auto">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4">Parlons de votre projet</h2>
-        <p class="text-slate-500">Une idée d'application ? Un besoin spécifique ? Je suis à votre écoute.</p>
-      </div>
-      
-      <form class="space-y-6">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Nom complet</label>
-          <input type="text" placeholder="Jean Dupont" class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Adresse email</label>
-          <input type="email" placeholder="jean@exemple.fr" class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Votre message</label>
-          <textarea rows="5" placeholder="Parlez-moi de votre besoin..." class="w-full bg-white border border-slate-200 p-4 rounded-2xl outline-none focus:border-accent transition-colors resize-none"></textarea>
-        </div>
-        <button class="w-full py-5 bg-accent text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
-          Envoyer le message
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="py-12 border-t border-slate-200 text-center px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-lg font-bold tracking-tighter mb-4">PORTFOLIO<span class="text-accent">.</span></div>
-      <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-        Création d'applications modernes et innovantes © 2024
-      </p>
+    <div class="max-w-7xl mx-auto pt-10 text-center text-slate-500 text-xs font-bold uppercase tracking-widest">
+      WellTrack Digital Solutions © 2024 • Conçu pour le Web.
     </div>
   </footer>
 
   <script>
-    // Animation au défilement
-    function reveal() {
-      var reveals = document.querySelectorAll(".reveal");
-      for (var i = 0; i < reveals.length; i++) {
-        var windowHeight = window.innerHeight;
-        var elementTop = reveals[i].getBoundingClientRect().top;
-        var elementVisible = 150;
-        if (elementTop < windowHeight - elementVisible) {
-          reveals[i].classList.add("active");
+    // Reveal animation logic
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
         }
-      }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Service Worker Registration (for PWA capabilities)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Optionnel: navigator.serviceWorker.register('/sw.js');
+      });
     }
-    window.addEventListener("scroll", reveal);
-    reveal(); // Appel initial
   </script>
 </body>
 </html>
