@@ -35,6 +35,13 @@ jobs:
           VITE_API_KEY: ${{ secrets.API_KEY }}
           API_KEY: ${{ secrets.API_KEY }}
           
+      - name: List dist directory after build
+        run: |
+          echo "Listing contents of ./dist:"
+          ls -la ./dist
+          echo "Listing contents of ./dist/assets (if exists):"
+          ls -la ./dist/assets || true # `|| true` empêche l'étape d'échouer si le dossier 'assets' n'existe pas
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
